@@ -1,0 +1,53 @@
+{
+  "official": [
+    {
+      "name": "山崎育三郎公式サイト",
+      "url": "https://example.com",
+      "type": "website"
+    },
+    {
+      "name": "山崎育三郎 Instagram公式",
+      "handle": "@ikusaburo_yamazaki_official",
+      "platform": "instagram",
+      "type": "social"
+    }
+  ],
+  "related_official": [
+    {
+      "name": "安倍なつみ (妻) 公式Instagram",
+      "handle": "@natsumiabe_official",
+      "platform": "instagram",
+      "relation": "family",
+      "note": "キーワード『育三郎』含む投稿のみ取得"
+    }
+  ],
+  "copyrighted_media": [
+    {
+      "name": "ORICON NEWS",
+      "domain": "oricon.co.jp",
+      "rss": "https://www.oricon.co.jp/rss/",
+      "fetch": "title+link only"
+    },
+    {
+      "name": "音楽ナタリー",
+      "domain": "natalie.mu",
+      "rss": "https://natalie.mu/music/news/rss",
+      "fetch": "title+link only"
+    },
+    {
+      "name": "ステージナタリー",
+      "domain": "natalie.mu/stage",
+      "rss": "https://natalie.mu/stage/news/rss",
+      "fetch": "title+link only"
+    },
+    {
+      "name": "モデルプレス",
+      "domain": "mdpr.jp",
+      "rss": "https://mdpr.jp/rss",
+      "fetch": "title+link only"
+    }
+  ],
+  "excluded": [
+    "一般ニュースサイト・まとめサイト・リークアカウントは取得しません"
+  ]
+}

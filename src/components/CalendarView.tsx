@@ -1,0 +1,3 @@
+export default function CalendarView({oshi}:{oshi:any}){
+  return (<div className="p-4"><h1 className="text-xl font-bold">{oshi.formal}</h1><p className="text-xs text-gray-500 mb-3">KW: {oshi.formal}・{oshi.nicknames.join("・")} で検索中</p><div className="grid grid-cols-7 gap-1 text-center text-xs">{Array.from({length:31},(_,i)=>i+1).map(d=>{const has=[3,8,12,15,19,22].includes(d); return <div key={d} className={`h-10 flex flex-col items-center justify-center rounded ${has?"bg-pink-50 border border-pink-200":""}`}>{d}{has&&<span className="w-1 h-1 bg-[#FF2D78] rounded-full mt-1"></span>}</div>})}</div><p className="text-[11px] text-gray-400 mt-3">チケットはメニューにのみ。タップでポップアップ + 違う学習</p></div>);
+}
