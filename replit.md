@@ -8,6 +8,7 @@
 - Install dependencies with `npm install` when setting up a fresh checkout.
 - Validate with `npx tsc --noEmit` and `npm run build`.
 - Production command after building: `npm start`.
+- After task merges, Replit runs `scripts/post-merge.sh` to install the locked dependencies with `npm ci`, then reconciles/restarts running workflows. This app has no database migrations.
 
 ## Imported demo limitations
 - No secrets or external services are required to run the current demo.
