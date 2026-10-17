@@ -6,7 +6,7 @@ export type NewsItem = {
   id: string;
   source: string;
   kind: "official" | "media";
-  title: string;
+  title?: string;
   url: string;
   publishedAt?: string;
 };

@@ -12,8 +12,8 @@
       "handle": "@ikusaburo_yamazaki_official",
       "platform": "instagram",
       "type": "social",
-      "enabled": false,
-      "note": "公開投稿を検索できるAPIがなく、アカウント認証が必要なため未取得"
+      "postUrls": [],
+      "note": "公開プロフィール検索は行いません。取得には個別の公開投稿URLが必要です"
     }
   ],
   "related_official": [
@@ -22,10 +22,11 @@
       "handle": "@natsumiabe_official",
       "platform": "instagram",
       "relation": "family",
-      "enabled": false,
-      "note": "公開投稿を検索できるAPIがなく、アカウント認証が必要なため未取得"
+      "postUrls": [],
+      "note": "公開プロフィール検索は行いません。取得には個別の公開投稿URLが必要です"
     }
   ],
+  "youtube": [],
   "copyrighted_media": [
     {
       "name": "ORICON NEWS",

@@ -33,7 +33,7 @@ export default function Page(){
               {tab==="menu" && <div className="p-4 text-sm space-y-4">
                 <button onClick={()=>setShowRegister(true)} className="w-full border p-3 rounded-lg text-left">推し管理: {oshi.formal} / {oshi.nicknames.join(", ")} 編集</button>
                 <div className="border p-3 rounded-lg">チケット (ここにのみ)</div>
-                 <div className="border p-3 rounded-lg"><b>データ提供元 (ホワイトリスト)</b><p className="text-xs text-gray-500 mt-2">公式サイトと利用可能なRSSを検索します。メディアはタイトルとリンクのみ表示します。Instagram投稿は公開検索APIを利用できないため取得しません。利用できない情報源は検索結果として表示しません。</p></div>
+                 <div className="border p-3 rounded-lg"><b>データ提供元 (ホワイトリスト)</b><p className="text-xs text-gray-500 mt-2">公式サイトとホワイトリスト内のRSSを確認します。Instagram・YouTubeは登録済みの個別投稿／動画URLのみ公式oEmbedで確認し、プロフィール検索は行いません。記事・投稿はタイトルとリンクのみ表示します。</p></div>
                 <a href="/terms" className="underline">利用規約</a>
               </div>}
             </>

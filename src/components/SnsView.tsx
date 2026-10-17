@@ -9,7 +9,10 @@ export default function SnsView({ oshi }: { oshi: any }) {
   const [menu, setMenu] = useState<string | null>(null);
   const items = (data?.news ?? []).filter((item) => !hidden.includes(item.id));
   const newsStatuses = data?.sourceStatuses.filter(
-    (source) => source.kind === "official" || source.kind === "media",
+    (source) =>
+      source.kind === "official" ||
+      source.kind === "media" ||
+      source.kind === "social",
   ) ?? [];
   const newsErrors = newsStatuses.filter((source) => source.status === "error");
   const sourceIssues = data?.sourceStatuses.filter((source) => source.status !== "ok") ?? [];
@@ -19,8 +22,7 @@ export default function SnsView({ oshi }: { oshi: any }) {
   return (
     <div className="h-full space-y-3 overflow-y-auto p-3">
       <div className="rounded bg-gray-50 p-2 text-[11px] text-gray-600">
-        公式サイトとホワイトリスト内のRSSを検索しています。記事はタイトルとリンクのみ表示します。
-        Instagram投稿は認証なしで検索できる公開APIがないため取得しません。
+        公式サイトとホワイトリスト内のRSSを確認します。Instagram・YouTubeは登録済みの個別投稿／動画URLのみ公式oEmbedで確認し、プロフィール検索は行いません。表示はタイトルとリンクのみです。
       </div>
 
       {loading && (
@@ -51,7 +53,7 @@ export default function SnsView({ oshi }: { oshi: any }) {
 
       {newsIsEmpty && (
         <div role="status" className="rounded-lg border p-4 text-sm text-gray-500">
-          ホワイトリスト内に一致する記事はありませんでした。検索結果を作成・補完することはありません。
+          ホワイトリスト内に一致する記事・投稿はありませんでした。SNSのプロフィール検索や結果の作成・補完は行いません。
         </div>
       )}
 
@@ -59,7 +61,9 @@ export default function SnsView({ oshi }: { oshi: any }) {
         <article key={item.id} className="relative rounded-lg border p-3 pr-10 text-sm">
           <div className="text-[11px] font-bold text-gray-500">
             {item.source}
-            {item.kind === "media" && <span className="ml-1 font-normal">（タイトル・リンクのみ）</span>}
+            {(item.kind === "media" || item.id.startsWith("social:")) && (
+              <span className="ml-1 font-normal">（タイトル・リンクのみ）</span>
+            )}
           </div>
           <a
             href={item.url}
@@ -67,7 +71,10 @@ export default function SnsView({ oshi }: { oshi: any }) {
             rel="noopener noreferrer"
             className="mt-1 block font-medium underline decoration-gray-300 underline-offset-2"
           >
-            {item.title}
+            {item.title ??
+              (item.id.startsWith("social:instagram:")
+                ? "Instagram投稿を開く"
+                : "投稿を開く")}
           </a>
           {item.publishedAt && (
             <time className="mt-1 block text-[11px] text-gray-400">

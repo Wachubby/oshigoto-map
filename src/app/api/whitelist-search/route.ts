@@ -8,7 +8,7 @@ type NewsItem = {
   id: string;
   source: string;
   kind: "official" | "media";
-  title: string;
+  title?: string;
   url: string;
   publishedAt?: string;
 };
@@ -36,6 +36,13 @@ type OfficialWebsiteSource = {
   url: string;
   domain: string;
   keywords: string[];
+};
+
+type SocialPostSource = {
+  name: string;
+  platform: "instagram" | "youtube";
+  urls: string[];
+  note?: string;
 };
 
 const REQUEST_TIMEOUT_MS = 9000;
@@ -232,6 +239,119 @@ async function fetchMediaFeed(
   }
 }
 
+function validatedSocialPostUrl(platform: SocialPostSource["platform"], rawUrl: string) {
+  const url = new URL(rawUrl);
+  if (url.protocol !== "https:") {
+    throw new Error("HTTPSの投稿URLのみ取得できます");
+  }
+
+  if (platform === "instagram") {
+    const isInstagramHost = ["instagram.com", "www.instagram.com"].includes(url.hostname);
+    const isPostPath = /^\/(?:p|reel|tv)\/[A-Za-z0-9_-]+\/?$/.test(url.pathname);
+    if (!isInstagramHost || !isPostPath) {
+      throw new Error("Instagramの個別投稿URLではありません");
+    }
+    return url;
+  }
+
+  const isYoutubeHost = [
+    "youtube.com",
+    "www.youtube.com",
+    "m.youtube.com",
+    "youtu.be",
+  ].includes(url.hostname);
+  const isYoutubeVideo =
+    (url.hostname === "youtu.be" && /^\/[A-Za-z0-9_-]+\/?$/.test(url.pathname)) ||
+    (/^\/(?:shorts|live)\/[A-Za-z0-9_-]+\/?$/.test(url.pathname)) ||
+    (url.pathname === "/watch" && Boolean(url.searchParams.get("v")));
+  if (!isYoutubeHost || !isYoutubeVideo) {
+    throw new Error("YouTubeの個別動画URLではありません");
+  }
+  return url;
+}
+
+async function fetchSocialPost(
+  source: SocialPostSource,
+  rawPostUrl: string,
+): Promise<NewsItem> {
+  const postUrl = validatedSocialPostUrl(source.platform, rawPostUrl);
+  const endpoint = source.platform === "instagram"
+    ? new URL("https://graph.facebook.com/v26.0/instagram_oembed")
+    : new URL("https://www.youtube.com/oembed");
+  endpoint.searchParams.set("url", postUrl.href);
+  if (source.platform === "youtube") endpoint.searchParams.set("format", "json");
+
+  const response = await fetch(endpoint, {
+    cache: "no-store",
+    headers: { accept: "application/json" },
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+  const body = await response.text();
+  if (new TextEncoder().encode(body).byteLength > MAX_SOURCE_BYTES) {
+    throw new Error("取得データが上限サイズを超えました");
+  }
+
+  const payload: unknown = JSON.parse(body);
+  if (!payload || typeof payload !== "object") {
+    throw new Error("公式oEmbed APIから投稿情報を確認できませんでした");
+  }
+
+  const title =
+    "title" in payload && typeof payload.title === "string"
+      ? payload.title.trim()
+      : "";
+  if (source.platform === "instagram") {
+    if (!("html" in payload) || typeof payload.html !== "string" || !payload.html.trim()) {
+      throw new Error("Instagram oEmbed APIから公開投稿を確認できませんでした");
+    }
+  } else if (!title) {
+    throw new Error("YouTube oEmbed APIからタイトルを確認できませんでした");
+  }
+
+  return {
+    id: `social:${source.platform}:${postUrl.href}`,
+    source: source.name,
+    kind: "official",
+    ...(title ? { title } : {}),
+    url: postUrl.href,
+  };
+}
+
+async function fetchSocialSource(
+  source: SocialPostSource,
+): Promise<SourceResult<NewsItem>> {
+  if (source.urls.length === 0) {
+    return {
+      items: [],
+      status: "unavailable",
+      message:
+        source.note ??
+        "公開プロフィールは検索しません。取得には個別の公開投稿・動画URLが必要です",
+    };
+  }
+
+  const outcomes = await Promise.all(
+    source.urls.map(async (url) => {
+      try {
+        return { item: await fetchSocialPost(source, url) };
+      } catch (error) {
+        return { error };
+      }
+    }),
+  );
+  const items = outcomes.flatMap((outcome) => outcome.item ? [outcome.item] : []);
+  if (items.length > 0) return { items, status: "ok" };
+
+  const firstError = outcomes.find((outcome) => "error" in outcome);
+  return {
+    items: [],
+    status: "error",
+    message: firstError ? sourceError(firstError.error) : "取得できる投稿がありません",
+  };
+}
+
 function toJstDateKey(date: Date) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Tokyo",
@@ -339,14 +459,37 @@ export async function GET(request: NextRequest) {
     termsMatch(queryTerms, source.keywords),
   );
   const enabledMedia = whitelist.copyrighted_media.filter((source) => source.enabled === true);
+  const socialSources: SocialPostSource[] = [
+    ...whitelist.official
+      .filter((source) => source.type === "social")
+      .map((source) => ({
+        name: source.name,
+        platform: "instagram" as const,
+        urls: source.postUrls ?? [],
+        note: source.note,
+      })),
+    ...whitelist.related_official.map((source) => ({
+      name: source.name,
+      platform: "instagram" as const,
+      urls: source.postUrls ?? [],
+      note: source.note,
+    })),
+    ...(whitelist.youtube as SocialPostSource[]),
+  ];
 
-  const newsResults = await Promise.all([
-    ...official.map((source) => fetchOfficialNews(source)),
-    ...enabledMedia.map((source) => fetchMediaFeed(source, queryTerms)),
+  const [newsResults, eventResults, socialResults] = await Promise.all([
+    Promise.all([
+      ...official.map((source) => fetchOfficialNews(source)),
+      ...enabledMedia.map((source) => fetchMediaFeed(source, queryTerms)),
+    ]),
+    Promise.all(eventSources.map(fetchOfficialEvents)),
+    Promise.all(socialSources.map(fetchSocialSource)),
   ]);
-  const eventResults = await Promise.all(eventSources.map(fetchOfficialEvents));
 
-  const news = newsResults.flatMap((result) => result.items);
+  const news = [
+    ...newsResults.flatMap((result) => result.items),
+    ...socialResults.flatMap((result) => result.items),
+  ];
   const events = eventResults.flatMap((result) => result.items);
   const activeStatuses = [
     ...official.map((source, index) =>
@@ -358,23 +501,12 @@ export async function GET(request: NextRequest) {
     ...eventSources.map((source, index) =>
       sourceStatus(source.name, "events", eventResults[index]),
     ),
+    ...socialSources.map((source, index) =>
+      sourceStatus(source.name, "social", socialResults[index]),
+    ),
   ];
 
   const unavailableStatuses = [
-    ...whitelist.official
-      .filter((source) => source.type === "social" && source.enabled !== true)
-      .map((source) => ({
-        name: source.name,
-        kind: "social" as const,
-        status: "unavailable" as const,
-        message: source.note,
-      })),
-    ...whitelist.related_official.map((source) => ({
-      name: source.name,
-      kind: "social" as const,
-      status: "unavailable" as const,
-      message: source.note,
-    })),
     ...whitelist.copyrighted_media
       .filter((source) => source.enabled !== true)
       .map((source) => ({
@@ -403,7 +535,7 @@ export async function GET(request: NextRequest) {
       events,
       sourceStatuses: [...activeStatuses, ...unavailableStatuses],
       notice:
-        "メディア記事はタイトルとリンクのみ表示します。Modelpress RSSは非営利利用に限られます。SNS投稿は認証なしで検索できる公式APIがないため取得しません。",
+        "RSS記事とSNS投稿はタイトルとリンクのみ表示します。Instagram/YouTubeはホワイトリスト登録済みの個別投稿・動画URLだけを公式oEmbed APIで確認し、プロフィール検索は行いません。Modelpress RSSは非営利利用に限られます。",
     },
     {
       headers: {

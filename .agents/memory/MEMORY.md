@@ -1,1 +1,2 @@
 - [Import compatibility](import-compatibility.md) — preserve the imported stack; an upgrade was required by the dependency security policy.
+- [Official social-source boundaries](official-social-source-boundaries.md) — use public oEmbed for explicit Instagram/YouTube links and whitelisted RSS; never search arbitrary profiles.
