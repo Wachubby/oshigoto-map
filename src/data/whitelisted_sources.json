@@ -2,14 +2,18 @@
   "official": [
     {
       "name": "山崎育三郎公式サイト",
-      "url": "https://example.com",
-      "type": "website"
+      "url": "https://www.ken-on.co.jp/1936/",
+      "domain": "www.ken-on.co.jp",
+      "type": "website",
+      "keywords": ["山崎育三郎", "いくちゃん", "トニー"]
     },
     {
       "name": "山崎育三郎 Instagram公式",
       "handle": "@ikusaburo_yamazaki_official",
       "platform": "instagram",
-      "type": "social"
+      "type": "social",
+      "enabled": false,
+      "note": "公開投稿を検索できるAPIがなく、アカウント認証が必要なため未取得"
     }
   ],
   "related_official": [
@@ -18,7 +22,8 @@
       "handle": "@natsumiabe_official",
       "platform": "instagram",
       "relation": "family",
-      "note": "キーワード『育三郎』含む投稿のみ取得"
+      "enabled": false,
+      "note": "公開投稿を検索できるAPIがなく、アカウント認証が必要なため未取得"
     }
   ],
   "copyrighted_media": [
@@ -26,25 +31,43 @@
       "name": "ORICON NEWS",
       "domain": "oricon.co.jp",
       "rss": "https://www.oricon.co.jp/rss/",
-      "fetch": "title+link only"
+      "fetch": "title+link only",
+      "enabled": false,
+      "note": "設定されていたRSS URLはHTTP 410で終了しているため取得しません"
     },
     {
       "name": "音楽ナタリー",
       "domain": "natalie.mu",
       "rss": "https://natalie.mu/music/news/rss",
-      "fetch": "title+link only"
+      "fetch": "title+link only",
+      "enabled": false,
+      "note": "設定されていたRSS URLがフィードを返さず、人間確認ページを返すため取得しません"
     },
     {
       "name": "ステージナタリー",
       "domain": "natalie.mu/stage",
       "rss": "https://natalie.mu/stage/news/rss",
-      "fetch": "title+link only"
+      "fetch": "title+link only",
+      "enabled": false,
+      "note": "設定されていたRSS URLがフィードを返さず、人間確認ページを返すため取得しません"
     },
     {
       "name": "モデルプレス",
       "domain": "mdpr.jp",
-      "rss": "https://mdpr.jp/rss",
-      "fetch": "title+link only"
+      "feedHost": "feed.mdpr.jp",
+      "rss": "https://feed.mdpr.jp/rss/export/mdpr-entertainment.xml",
+      "fetch": "title+link only",
+      "enabled": true,
+      "note": "RSS利用規約により非営利利用に限ります"
+    }
+  ],
+  "events": [
+    {
+      "name": "山崎育三郎 LIVE TOUR 2026「19BOX 〜STARMAN〜」",
+      "url": "https://www.ken-on.co.jp/starman/schedule",
+      "domain": "www.ken-on.co.jp",
+      "type": "official-schedule",
+      "keywords": ["山崎育三郎", "いくちゃん", "トニー"]
     }
   ],
   "excluded": [

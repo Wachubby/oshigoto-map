@@ -16,8 +16,8 @@ export default function Sheet({initial,onSave,onClose}:{initial:any,onSave:any,o
         <label className="text-xs">ニックネーム 最大3件</label>
         <div className="flex gap-2 mb-2"><input value={nick} onChange={e=>setNick(e.target.value)} placeholder="いくちゃん" className="flex-1 border p-2 rounded"/><button onClick={()=>{if(nick&&nicks.length<3){setNicks([...nicks,nick]); setNick("");}}} className="bg-black text-white px-3 rounded">追加</button></div>
         <div className="flex gap-2 flex-wrap mb-3">{nicks.map((n,i)=><span key={i} className="bg-pink-100 text-[#FF2D78] px-2 py-1 rounded-full text-xs">{n} <button onClick={()=>setNicks(nicks.filter((_,j)=>j!==i))}>x</button></span>)}</div>
-        {gen && <div className="bg-yellow-50 border border-yellow-200 p-2 rounded text-xs mb-3">⚠️「{gen}」は一般的すぎます。別人の情報が混ざる可能性。プレビュー: 124件 → ホワイトリスト内 8件</div>}
-        <div className="bg-gray-50 p-2 rounded text-xs mb-4">プレビュー: 正式名「{formal}」12件 + ニックネーム {nicks.length*4}件</div>
+        {gen && <div className="bg-yellow-50 border border-yellow-200 p-2 rounded text-xs mb-3">⚠️「{gen}」は一般的すぎます。別人の情報が混ざる可能性があります。</div>}
+        <div className="bg-gray-50 p-2 rounded text-xs mb-4">登録後、ホワイトリスト内で正式名とニックネームを検索します。</div>
         <p className="text-[11px] text-gray-400 mb-3">端末内(LocalStorage)のみ保存</p>
         <button onClick={()=>onSave({formal,yomi,nicknames:nicks})} className="w-full bg-[#FF2D78] text-white py-3 rounded-full font-bold">登録</button>
       </div>

@@ -16,7 +16,7 @@ export default function Page(){
   return (
     <div className="min-h-screen bg-[#f6f6f6] flex justify-center">
       <div className="w-[390px] bg-white min-h-screen relative flex flex-col shadow-xl">
-        <header className="h-14 border-b flex items-center justify-between px-4 text-xs"><span className="font-bold">推しごとマップ</span><span className="text-[10px]">MOCK | info@wachubby.com</span></header>
+        <header className="h-14 border-b flex items-center justify-between px-4 text-xs"><span className="font-bold">推しごとマップ</span><span className="text-[10px]">ホワイトリスト情報</span></header>
         <div className="flex-1 overflow-hidden relative pb-[72px]">
           {isEmpty ? (
             <div className="p-6 text-center pt-20">
@@ -33,7 +33,7 @@ export default function Page(){
               {tab==="menu" && <div className="p-4 text-sm space-y-4">
                 <button onClick={()=>setShowRegister(true)} className="w-full border p-3 rounded-lg text-left">推し管理: {oshi.formal} / {oshi.nicknames.join(", ")} 編集</button>
                 <div className="border p-3 rounded-lg">チケット (ここにのみ)</div>
-                <div className="border p-3 rounded-lg"><b>データ提供元 (ホワイトリスト)</b><p className="text-xs text-gray-500 mt-2">本人公式 / 関連:安倍なつみ等 / 正規メディア:ORICON,ナタリー等 タイトル+リンクのみ</p></div>
+                 <div className="border p-3 rounded-lg"><b>データ提供元 (ホワイトリスト)</b><p className="text-xs text-gray-500 mt-2">公式サイトと利用可能なRSSを検索します。メディアはタイトルとリンクのみ表示します。Instagram投稿は公開検索APIを利用できないため取得しません。利用できない情報源は検索結果として表示しません。</p></div>
                 <a href="/terms" className="underline">利用規約</a>
               </div>}
             </>
