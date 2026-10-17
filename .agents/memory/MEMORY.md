@@ -1,0 +1,1 @@
+- [Import compatibility](import-compatibility.md) — preserve the imported stack; an upgrade was required by the dependency security policy.
