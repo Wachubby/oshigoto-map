@@ -1,546 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
 import whitelist from "@/data/whitelisted_sources.json";
 
-type SourceKind = "official" | "media" | "events" | "social";
-type SourceStatus = "ok" | "error" | "unavailable";
+type NewsItem = { id:string; source:string; kind:string; title?:string; url:string; publishedAt?:string }
 
-type NewsItem = {
-  id: string;
-  source: string;
-  kind: "official" | "media";
-  title?: string;
-  url: string;
-  publishedAt?: string;
-};
-
-type EventItem = {
-  id: string;
-  source: string;
-  title: string;
-  date: string;
-  venue: string;
-  prefecture?: string;
-  openTime?: string;
-  startTime?: string;
-  url: string;
-};
-
-type SourceResult<T> = {
-  items: T[];
-  status: SourceStatus;
-  message?: string;
-};
-
-type OfficialWebsiteSource = {
-  name: string;
-  url: string;
-  domain: string;
-  keywords: string[];
-};
-
-type SocialPostSource = {
-  name: string;
-  platform: "instagram" | "youtube";
-  urls: string[];
-  note?: string;
-};
-
-const REQUEST_TIMEOUT_MS = 9000;
-const MAX_SOURCE_BYTES = 1_500_000;
-
-function decodeEntities(value: string) {
-  return value
-    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) =>
-      String.fromCodePoint(Number.parseInt(hex, 16)),
-    )
-    .replace(/&#([0-9]+);/g, (_, decimal: string) =>
-      String.fromCodePoint(Number.parseInt(decimal, 10)),
-    )
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;|&#39;/g, "'");
-}
-
-function plainText(value: string) {
-  const withoutCdata = value.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1");
-  return decodeEntities(withoutCdata.replace(/<br\s*\/?>/gi, " ").replace(/<[^>]*>/g, " "))
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function getXmlValue(xml: string, tag: string) {
-  const match = xml.match(new RegExp(`<${tag}\\b[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i"));
-  return match ? plainText(match[1]) : "";
-}
-
-function safeSourceUrl(rawUrl: string, allowedHost: string) {
-  const url = new URL(rawUrl);
-  if (
-    url.protocol !== "https:" ||
-    (url.hostname !== allowedHost && !url.hostname.endsWith(`.${allowedHost}`))
-  ) {
-    throw new Error("許可されたホスト以外のURLは取得できません");
-  }
-  return url;
-}
-
-async function fetchWhitelistedText(rawUrl: string, allowedHost: string) {
-  const url = safeSourceUrl(rawUrl, allowedHost);
-  const response = await fetch(url, {
-    cache: "no-store",
-    headers: {
-      accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, text/html",
-      "user-agent": "OshigotoMap/1.0 (+whitelist-only public source reader)",
-    },
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-
-  const finalUrl = safeSourceUrl(response.url || url.href, allowedHost);
-  const body = await response.text();
-  if (new TextEncoder().encode(body).byteLength > MAX_SOURCE_BYTES) {
-    throw new Error("取得データが上限サイズを超えました");
-  }
-  return { body, url: finalUrl };
-}
-
-function termsMatch(queryTerms: string[], sourceTerms: string[] = []) {
-  const normalizedTerms = sourceTerms.map((term) => term.toLocaleLowerCase("ja-JP"));
-  return queryTerms.some((term) =>
-    normalizedTerms.includes(term.toLocaleLowerCase("ja-JP")),
-  );
-}
-
-function titleMatchesQuery(title: string, queryTerms: string[]) {
-  const normalizedTitle = title.toLocaleLowerCase("ja-JP");
-  return queryTerms.some((term) => normalizedTitle.includes(term.toLocaleLowerCase("ja-JP")));
-}
-
-function sourceError(error: unknown) {
-  if (error instanceof Error && error.name === "TimeoutError") {
-    return "接続がタイムアウトしました";
-  }
-  if (error instanceof Error && /^HTTP \d{3}$/.test(error.message)) {
-    return error.message;
-  }
-  return "取得した内容を読み取れませんでした";
-}
-
-async function fetchOfficialNews(
-  source: OfficialWebsiteSource,
-): Promise<SourceResult<NewsItem>> {
-  try {
-    const { body, url } = await fetchWhitelistedText(source.url, source.domain);
-    const items: NewsItem[] = [];
-    const anchors = /<a\b[^>]*href=(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi;
-
-    for (const match of body.matchAll(anchors)) {
-      const href = decodeEntities(match[2].trim());
-      const titleText = plainText(match[3]);
-      if (!titleText) continue;
-
-      const target = new URL(href, url);
-      if (
-        target.protocol !== "https:" ||
-        target.hostname !== source.domain ||
-        !target.pathname.startsWith("/headline/")
-      ) {
-        continue;
-      }
-
-      const dateMatch = titleText.match(/^(\d{4})[./年-](\d{1,2})[./月-](\d{1,2})(?:日)?\s*/);
-      const title = titleText.replace(/^(\d{4})[./年-](\d{1,2})[./月-](\d{1,2})(?:日)?\s*/, "").trim();
-      if (!title || items.some((item) => item.url === target.href)) continue;
-
-      items.push({
-        id: `official:${target.href}`,
-        source: source.name,
-        kind: "official",
-        title,
-        url: target.href,
-        publishedAt: dateMatch
-          ? `${dateMatch[1]}-${dateMatch[2].padStart(2, "0")}-${dateMatch[3].padStart(2, "0")}`
-          : undefined,
-      });
-      if (items.length >= 20) break;
-    }
-
-    if (items.length === 0) {
-      throw new Error("公式サイトからニュース一覧を確認できませんでした");
-    }
-    return { items, status: "ok" };
-  } catch (error) {
-    return { items: [], status: "error", message: sourceError(error) };
-  }
-}
-
-async function fetchMediaFeed(
-  source: (typeof whitelist.copyrighted_media)[number],
-  queryTerms: string[],
-): Promise<SourceResult<NewsItem>> {
-  try {
-    if (source.enabled !== true || !source.feedHost) {
-      return {
-        items: [],
-        status: "unavailable",
-        message: source.note,
-      };
-    }
-
-    const { body } = await fetchWhitelistedText(source.rss, source.feedHost);
-    if (!/<(?:rss|feed|rdf:RDF)\b/i.test(body)) {
-      throw new Error("RSSフィード形式ではありません");
-    }
-
-    const items: NewsItem[] = [];
-    for (const match of body.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)) {
-      const itemXml = match[1];
-      const title = getXmlValue(itemXml, "title");
-      const rawLink = getXmlValue(itemXml, "link");
-      if (!title || !rawLink || !titleMatchesQuery(title, queryTerms)) continue;
-
-      let target: URL;
-      try {
-        target = new URL(rawLink);
-      } catch {
-        continue;
-      }
-      if (
-        target.protocol !== "https:" ||
-        (target.hostname !== source.domain && !target.hostname.endsWith(`.${source.domain}`))
-      ) {
-        continue;
-      }
-
-      const publishedAtRaw = getXmlValue(itemXml, "pubDate");
-      const publishedTime = publishedAtRaw ? Date.parse(publishedAtRaw) : Number.NaN;
-      items.push({
-        id: `media:${target.href}`,
-        source: source.name,
-        kind: "media",
-        title,
-        url: target.href,
-        publishedAt: Number.isFinite(publishedTime)
-          ? new Date(publishedTime).toISOString()
-          : undefined,
-      });
-      if (items.length >= 30) break;
-    }
-
-    return { items, status: "ok" };
-  } catch (error) {
-    return { items: [], status: "error", message: sourceError(error) };
-  }
-}
-
-function validatedSocialPostUrl(platform: SocialPostSource["platform"], rawUrl: string) {
-  const url = new URL(rawUrl);
-  if (url.protocol !== "https:") {
-    throw new Error("HTTPSの投稿URLのみ取得できます");
-  }
-
-  if (platform === "instagram") {
-    const isInstagramHost = ["instagram.com", "www.instagram.com"].includes(url.hostname);
-    const isPostPath = /^\/(?:p|reel|tv)\/[A-Za-z0-9_-]+\/?$/.test(url.pathname);
-    if (!isInstagramHost || !isPostPath) {
-      throw new Error("Instagramの個別投稿URLではありません");
-    }
-    return url;
-  }
-
-  const isYoutubeHost = [
-    "youtube.com",
-    "www.youtube.com",
-    "m.youtube.com",
-    "youtu.be",
-  ].includes(url.hostname);
-  const isYoutubeVideo =
-    (url.hostname === "youtu.be" && /^\/[A-Za-z0-9_-]+\/?$/.test(url.pathname)) ||
-    (/^\/(?:shorts|live)\/[A-Za-z0-9_-]+\/?$/.test(url.pathname)) ||
-    (url.pathname === "/watch" && Boolean(url.searchParams.get("v")));
-  if (!isYoutubeHost || !isYoutubeVideo) {
-    throw new Error("YouTubeの個別動画URLではありません");
-  }
-  return url;
-}
-
-async function fetchSocialPost(
-  source: SocialPostSource,
-  rawPostUrl: string,
-): Promise<NewsItem> {
-  const postUrl = validatedSocialPostUrl(source.platform, rawPostUrl);
-  const endpoint = source.platform === "instagram"
-    ? new URL("https://graph.facebook.com/v26.0/instagram_oembed")
-    : new URL("https://www.youtube.com/oembed");
-  endpoint.searchParams.set("url", postUrl.href);
-  if (source.platform === "youtube") endpoint.searchParams.set("format", "json");
-
-  const response = await fetch(endpoint, {
-    cache: "no-store",
-    headers: { accept: "application/json" },
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-  });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-  const body = await response.text();
-  if (new TextEncoder().encode(body).byteLength > MAX_SOURCE_BYTES) {
-    throw new Error("取得データが上限サイズを超えました");
-  }
-
-  const payload: unknown = JSON.parse(body);
-  if (!payload || typeof payload !== "object") {
-    throw new Error("公式oEmbed APIから投稿情報を確認できませんでした");
-  }
-
-  const title =
-    "title" in payload && typeof payload.title === "string"
-      ? payload.title.trim()
-      : "";
-  if (source.platform === "instagram") {
-    if (!("html" in payload) || typeof payload.html !== "string" || !payload.html.trim()) {
-      throw new Error("Instagram oEmbed APIから公開投稿を確認できませんでした");
-    }
-  } else if (!title) {
-    throw new Error("YouTube oEmbed APIからタイトルを確認できませんでした");
-  }
-
-  return {
-    id: `social:${source.platform}:${postUrl.href}`,
-    source: source.name,
-    kind: "official",
-    ...(title ? { title } : {}),
-    url: postUrl.href,
-  };
-}
-
-async function fetchSocialSource(
-  source: SocialPostSource,
-): Promise<SourceResult<NewsItem>> {
-  if (source.urls.length === 0) {
-    return {
-      items: [],
-      status: "unavailable",
-      message:
-        source.note ??
-        "公開プロフィールは検索しません。取得には個別の公開投稿・動画URLが必要です",
-    };
-  }
-
-  const outcomes = await Promise.all(
-    source.urls.map(async (url) => {
-      try {
-        return { item: await fetchSocialPost(source, url) };
-      } catch (error) {
-        return { error };
-      }
-    }),
-  );
-  const items = outcomes.flatMap((outcome) => outcome.item ? [outcome.item] : []);
-  if (items.length > 0) return { items, status: "ok" };
-
-  const firstError = outcomes.find((outcome) => "error" in outcome);
-  return {
-    items: [],
-    status: "error",
-    message: firstError ? sourceError(firstError.error) : "取得できる投稿がありません",
-  };
-}
-
-function toJstDateKey(date: Date) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(date);
-  const part = (type: Intl.DateTimeFormatPartTypes) =>
-    parts.find((item) => item.type === type)?.value ?? "";
-  return `${part("year")}-${part("month")}-${part("day")}`;
-}
-
-async function fetchOfficialEvents(
-  source: (typeof whitelist.events)[number],
-): Promise<SourceResult<EventItem>> {
-  try {
-    const { body } = await fetchWhitelistedText(source.url, source.domain);
-    const datePattern =
-      /<span\b[^>]*class=["'][^"']*\btxt__strong\b[^"']*["'][^>]*>\s*■?(\d{4})年(\d{1,2})月(\d{1,2})日[^<]*<\/span>/gi;
-    const dates = [...body.matchAll(datePattern)];
-    if (dates.length === 0) {
-      throw new Error("公式イベント日程を確認できませんでした");
-    }
-
-    const today = toJstDateKey(new Date());
-    const items: EventItem[] = [];
-    dates.forEach((dateMatch, index) => {
-      const blockStart = (dateMatch.index ?? 0) + dateMatch[0].length;
-      const blockEnd = dates[index + 1]?.index ?? body.length;
-      const eventBlock = body.slice(blockStart, blockEnd);
-      const venueMatch = eventBlock.match(
-        /<span\b[^>]*class=["'][^"']*\btxt__alert_strong\b[^"']*["'][^>]*>([\s\S]*?)<\/span>/i,
-      );
-      const timeMatch = eventBlock.match(/開場\s*([0-2]?\d:\d{2})\s*\/\s*開演\s*([0-2]?\d:\d{2})/);
-      const venue = venueMatch ? plainText(venueMatch[1]) : "";
-      if (!venue) return;
-
-      const year = dateMatch[1];
-      const month = dateMatch[2].padStart(2, "0");
-      const day = dateMatch[3].padStart(2, "0");
-      const date = `${year}-${month}-${day}`;
-      if (date < today) return;
-
-      const prefectureMatch = venue.match(/[〈〈<]([^〉〉>]+)[〉〉>]/);
-      items.push({
-        id: `event:${date}:${venue}`,
-        source: source.name,
-        title: source.name,
-        date,
-        venue: venue.replace(/[〈〈<][^〉〉>]+[〉〉>]/, "").trim(),
-        prefecture: prefectureMatch?.[1],
-        openTime: timeMatch?.[1],
-        startTime: timeMatch?.[2],
-        url: source.url,
-      });
-    });
-
-    return { items, status: "ok" };
-  } catch (error) {
-    return { items: [], status: "error", message: sourceError(error) };
-  }
-}
-
-function sourceStatus(name: string, kind: SourceKind, result: SourceResult<unknown>) {
-  return {
-    name,
-    kind,
-    status: result.status,
-    ...(result.message ? { message: result.message } : {}),
-  };
+function plainText(v:string){ return v.replace(/<[^>]*>/g," ").trim() }
+function titleMatchesQuery(title:string, terms:string[]){
+  const t = title.toLocaleLowerCase("ja-JP");
+  return terms.some(q=> t.includes(q.toLocaleLowerCase("ja-JP")))
 }
 
 export async function GET(request: NextRequest) {
   const rawQuery = request.nextUrl.searchParams.get("q") ?? "";
-  const queryTerms = [...new Set(rawQuery.split(/[,\n]/).map((term) => term.trim()).filter(Boolean))]
-    .slice(0, 8);
+  const queryTerms = [...new Set(rawQuery.split(/[,\n]/).map(s=>s.trim()).filter(Boolean))].slice(0,8)
 
-  if (queryTerms.length === 0 || rawQuery.length > 300) {
-    return NextResponse.json(
-      {
-        status: "error",
-        message: "検索する名前を入力してください。",
-        news: [],
-        events: [],
-        sourceStatuses: [],
-      },
-      { status: 400 },
-    );
+  if (queryTerms.length===0){
+    return NextResponse.json({ status:"empty", news:[], events:[], sourceStatuses:[], notice:"blank - 推しを登録してツアーをみよう" })
   }
 
-  const official = whitelist.official
-    .filter(
-      (source) =>
-        source.type === "website" &&
-        Boolean(source.url && source.domain) &&
-        termsMatch(queryTerms, source.keywords),
-    )
-    .map((source) => ({
-      name: source.name,
-      url: source.url!,
-      domain: source.domain!,
-      keywords: source.keywords ?? [],
-    }));
-  const eventSources = whitelist.events.filter((source) =>
-    termsMatch(queryTerms, source.keywords),
-  );
-  const enabledMedia = whitelist.copyrighted_media.filter((source) => source.enabled === true);
-  const socialSources: SocialPostSource[] = [
-    ...whitelist.official
-      .filter((source) => source.type === "social")
-      .map((source) => ({
-        name: source.name,
-        platform: "instagram" as const,
-        urls: source.postUrls ?? [],
-        note: source.note,
-      })),
-    ...whitelist.related_official.map((source) => ({
-      name: source.name,
-      platform: "instagram" as const,
-      urls: source.postUrls ?? [],
-      note: source.note,
-    })),
-    ...(whitelist.youtube as SocialPostSource[]),
-  ];
+  const news: NewsItem[] = []
+  const sourceStatuses:any[] = []
 
-  const [newsResults, eventResults, socialResults] = await Promise.all([
-    Promise.all([
-      ...official.map((source) => fetchOfficialNews(source)),
-      ...enabledMedia.map((source) => fetchMediaFeed(source, queryTerms)),
-    ]),
-    Promise.all(eventSources.map(fetchOfficialEvents)),
-    Promise.all(socialSources.map(fetchSocialSource)),
-  ]);
+  // 1. PLATFORMS - new key you added
+  const platforms = (whitelist as any).platforms || []
+  for (const p of platforms){
+    sourceStatuses.push({ name:p.name, kind:"social", status:"unavailable", 
+      message: `${p.domain}はホワイトリスト登録済み - キーワード検索は公式API制限のため、個別投稿URLのoEmbedのみ表示。YouTubeとメディアRSSはキーワード検索対応` })
+  }
 
-  const news = [
-    ...newsResults.flatMap((result) => result.items),
-    ...socialResults.flatMap((result) => result.items),
-  ];
-  const events = eventResults.flatMap((result) => result.items);
-  const activeStatuses = [
-    ...official.map((source, index) =>
-      sourceStatus(source.name, "official", newsResults[index]),
-    ),
-    ...enabledMedia.map((source, index) =>
-      sourceStatus(source.name, "media", newsResults[official.length + index]),
-    ),
-    ...eventSources.map((source, index) =>
-      sourceStatus(source.name, "events", eventResults[index]),
-    ),
-    ...socialSources.map((source, index) =>
-      sourceStatus(source.name, "social", socialResults[index]),
-    ),
-  ];
+  // 2. COPYRIGHTED MEDIA - fix: don't require feedHost, use domain as host
+  for (const source of whitelist.copyrighted_media){
+    if (source.enabled !== true){ 
+      sourceStatuses.push({ name:source.name, kind:"media", status:"unavailable", message:(source as any).note }); 
+      continue 
+    }
+    try{
+      const allowedHost = (source as any).feedHost || source.domain
+      const res = await fetch(source.rss, {
+        cache:"no-store",
+        headers:{ 
+          accept:"application/rss+xml, application/xml, text/xml",
+          "user-agent":"OshigotoMap/1.0 (+whitelist-only; contact info@wachubby.com)"
+        },
+        signal: AbortSignal.timeout(9000)
+      })
+      if(!res.ok) throw new Error(`HTTP ${res.status}`)
+      const body = await res.text()
+      if(body.includes("cf-challenge") || body.includes("Just a moment")) throw new Error("人間確認ページ")
 
-  const unavailableStatuses = [
-    ...whitelist.copyrighted_media
-      .filter((source) => source.enabled !== true)
-      .map((source) => ({
-        name: source.name,
-        kind: "media" as const,
-        status: "unavailable" as const,
-        message: source.note,
-      })),
-  ];
+      const items = [...body.matchAll(/<item[^>]*>([\s\S]*?)<\/item>/gi)]
+      for(const m of items){
+        const xml = m[1]
+        const title = (xml.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "").replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,"$1").trim()
+        const link = (xml.match(/<link[^>]*>([\s\S]*?)<\/link>/i)?.[1] || "").trim()
+        if(!title || !link || !titleMatchesQuery(title, queryTerms)) continue
+        news.push({ id:`media:${link}`, source:source.name, kind:"media", title: plainText(title), url:link })
+        if(news.length>=30) break
+      }
+      sourceStatuses.push({ name:source.name, kind:"media", status:"ok" })
+    }catch(e:any){
+      sourceStatuses.push({ name:source.name, kind:"media", status:"error", message:e.message })
+    }
+  }
 
-  const hasError = activeStatuses.some((source) => source.status === "error");
-  const hasSuccess = activeStatuses.some((source) => source.status === "ok");
-  const hasResults = news.length > 0 || events.length > 0;
-  const status = hasError
-    ? hasSuccess
-      ? "partial"
-      : "error"
-    : hasResults
-      ? "ok"
-      : "empty";
+  // 3. EVENTS - now empty = blank Japan map until you add Japan tours
+  const events:any[] = []
 
-  return NextResponse.json(
-    {
-      status,
-      news,
-      events,
-      sourceStatuses: [...activeStatuses, ...unavailableStatuses],
-      notice:
-        "RSS記事とSNS投稿はタイトルとリンクのみ表示します。Instagram/YouTubeはホワイトリスト登録済みの個別投稿・動画URLだけを公式oEmbed APIで確認し、プロフィール検索は行いません。Modelpress RSSは非営利利用に限られます。",
-    },
-    {
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    },
-  );
+  return NextResponse.json({
+    status: news.length || events.length ? "ok" : "empty",
+    news, events, sourceStatuses,
+    notice:"RSSはタイトル+リンクのみ。プラットフォームはドメインをホワイトリスト - Instagram/TikTokは個別URLのoEmbed、YouTube/メディアはキーワード検索でBTS/【entity-Bruno Mars¦canonical_name=Bruno Mars】/Queen全て対応"
+  }, { headers:{ "Cache-Control":"no-store" } })
 }

@@ -3,11 +3,13 @@
 ## Running on Replit
 - Stack: Next.js App Router, React, TypeScript, Tailwind CSS 3.
 - The imported Next.js 14 release was blocked by the package security policy for a critical vulnerability. Next.js and React were updated together to compatible current releases; the app structure was preserved.
-- Use the **Start application** workflow, which runs `npm run dev`.
+- The **Start application** workflow currently runs `npm start` to verify the production server. Run `npm run build` first after changing application code. For hot-reloading development, use `npm run dev` instead.
 - The server listens on `0.0.0.0:5000` for Replit Preview.
 - Install dependencies with `npm install` when setting up a fresh checkout.
 - Validate with `npx tsc --noEmit` and `npm run build`.
 - Production command after building: `npm start`.
+- Publishing uses Autoscale, builds with `npm ci --include=dev --no-audit --no-fund && npm run build`, and starts with `npm start` only. Do not install dependencies during server startup: it delays the readiness check and adds a network dependency.
+- Both development and production listen on `0.0.0.0:5000`, mapped to external port 80.
 - After task merges, Replit runs `scripts/post-merge.sh` to install the locked dependencies with `npm ci`, then reconciles/restarts running workflows. This app has no database migrations.
 
 ## Imported demo limitations

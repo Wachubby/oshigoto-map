@@ -1,77 +1,21 @@
 {
-  "official": [
-    {
-      "name": "山崎育三郎公式サイト",
-      "url": "https://www.ken-on.co.jp/1936/",
-      "domain": "www.ken-on.co.jp",
-      "type": "website",
-      "keywords": ["山崎育三郎", "いくちゃん", "トニー"]
-    },
-    {
-      "name": "山崎育三郎 Instagram公式",
-      "handle": "@ikusaburo_yamazaki_official",
-      "platform": "instagram",
-      "type": "social",
-      "postUrls": [],
-      "note": "公開プロフィール検索は行いません。取得には個別の公開投稿URLが必要です"
-    }
-  ],
-  "related_official": [
-    {
-      "name": "安倍なつみ (妻) 公式Instagram",
-      "handle": "@natsumiabe_official",
-      "platform": "instagram",
-      "relation": "family",
-      "postUrls": [],
-      "note": "公開プロフィール検索は行いません。取得には個別の公開投稿URLが必要です"
-    }
+  "official": [],
+  "related_official": [],
+  "platforms": [
+    { "name": "Instagram", "domain": "instagram.com", "type": "social", "note": "公開投稿URLのoEmbedのみ - 公開プロフィール検索は行いません" },
+    { "name": "TikTok", "domain": "tiktok.com", "type": "social", "note": "公開投稿URLのoEmbedのみ" },
+    { "name": "X / Twitter", "domain": "x.com", "aliases": ["twitter.com"], "type": "social" },
+    { "name": "YouTube", "domain": "youtube.com", "type": "social", "method": "Data API v3 keyword search" },
+    { "name": "Threads", "domain": "threads.net", "type": "social" }
   ],
   "youtube": [],
   "copyrighted_media": [
-    {
-      "name": "ORICON NEWS",
-      "domain": "oricon.co.jp",
-      "rss": "https://www.oricon.co.jp/rss/",
-      "fetch": "title+link only",
-      "enabled": false,
-      "note": "設定されていたRSS URLはHTTP 410で終了しているため取得しません"
-    },
-    {
-      "name": "音楽ナタリー",
-      "domain": "natalie.mu",
-      "rss": "https://natalie.mu/music/news/rss",
-      "fetch": "title+link only",
-      "enabled": false,
-      "note": "設定されていたRSS URLがフィードを返さず、人間確認ページを返すため取得しません"
-    },
-    {
-      "name": "ステージナタリー",
-      "domain": "natalie.mu/stage",
-      "rss": "https://natalie.mu/stage/news/rss",
-      "fetch": "title+link only",
-      "enabled": false,
-      "note": "設定されていたRSS URLがフィードを返さず、人間確認ページを返すため取得しません"
-    },
-    {
-      "name": "モデルプレス",
-      "domain": "mdpr.jp",
-      "feedHost": "feed.mdpr.jp",
-      "rss": "https://feed.mdpr.jp/rss/export/mdpr-entertainment.xml",
-      "fetch": "title+link only",
-      "enabled": true,
-      "note": "RSS利用規約により非営利利用に限ります"
-    }
+    { "name": "ORICON NEWS", "domain": "oricon.co.jp", "rss": "https://www.oricon.co.jp/rss/music/", "fetch": "title+link only", "enabled": true },
+    { "name": "音楽ナタリー", "domain": "natalie.mu", "rss": "https://natalie.mu/music/feed/news", "fetch": "title+link only", "enabled": true, "requireUA": true },
+    { "name": "ステージナタリー", "domain": "natalie.mu", "rss": "https://natalie.mu/stage/news", "fetch": "title+link only", "enabled": true, "requireUA": true },
+    { "name": "モデルプレス", "domain": "mdpr.jp", "feedHost": "feed.mdpr.jp", "rss": "https://feed.mdpr.jp/rss/export/mdpr-entertainment.xml", "fetch": "title+link only", "enabled": true }
   ],
-  "events": [
-    {
-      "name": "山崎育三郎 LIVE TOUR 2026「19BOX 〜STARMAN〜」",
-      "url": "https://www.ken-on.co.jp/starman/schedule",
-      "domain": "www.ken-on.co.jp",
-      "type": "official-schedule",
-      "keywords": ["山崎育三郎", "いくちゃん", "トニー"]
-    }
-  ],
-  "excluded": [
-    "一般ニュースサイト・まとめサイト・リークアカウントは取得しません"
-  ]
+  "events": [],
+  "excluded": ["一般ニュースサイト・まとめサイト・リークアカウントは取得しません - ホワイトリスト内プラットフォーム / 著作権メディアのタイトル+リンク / oEmbedのみ"],
+  "search_logic": "keyword (正式名 OR ニックネーム1-3) AND domain in platforms OR copyrighted_media - Japan tour only"
 }

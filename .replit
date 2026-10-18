@@ -1,7 +1,17 @@
-modules = ["nodejs-24"]
+run = "npm start"
+modules = ["nodejs-20"]
+
 [nix]
-channel = "stable-25_05"
-packages = ["unzip"]
+channel = "stable-24_05"
+
+[deployment]
+run = "npm install && npm start"
+build = "npm install && npm run build"
+deploymentTarget = "gce"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [workflows]
 runButton = "Project"
@@ -21,16 +31,8 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev"
+args = "npm start"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
-
-[[ports]]
-localPort = 5000
-externalPort = 80
-
-[postMerge]
-path = "scripts/post-merge.sh"
-timeoutMs = 180000

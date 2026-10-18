@@ -1,1 +1,30 @@
-export default function Terms(){return (<div className="p-5 text-sm max-w-[390px] mx-auto bg-white min-h-screen"><a href="/" className="underline text-xs">←戻る</a><h1 className="text-lg font-bold mt-3">推しごとマップ利用規約</h1><p className="text-xs text-gray-400">制定 2026/10/16 / info@wachubby.com</p><div className="mt-4 space-y-3 text-xs leading-relaxed"><p><b>第3条 取得元(ホワイトリスト制)</b><br/>本人公式、関連公式(家族・共演者等の公式SNSでキーワード含むもの、例:安倍なつみ)、ホワイトリスト登録済みの著作権を有する正規メディア(ORICON,ナタリー,モデルプレス等 RSSタイトル+リンクのみ)、チケット公式。ホワイトリスト外は取得せず。一般ニュース・まとめ・リークは取得しない。</p><p><b>第4条 キーワード登録</b> 正式名+最大3件ニックネーム、端末内のみ。</p><p><b>第5条 学習</b> 「違う」選択で非表示+匿名学習。</p></div></div>); }
+export const metadata = {
+  title: "oshigoto-map-terms",
+}
+
+export default function Terms(){
+return(
+<div style={{maxWidth:720, margin:"40px auto", padding:"0 20px", lineHeight:"1.8"}}>
+<a href="/">←戻る</a>
+<h1>推しごとマップ 利用規約</h1>
+<p style={{color:"#888"}}>制定 2026/10/16 / info@wachubby.com</p>
+
+<h3>第1条 適用</h3><p>本規約は推しごとマップの利用条件を定めます。</p>
+<h3>第2条 定義</h3><p>「推し」とは正式名+最大3件のニックネーム。日本国内ツアーのみ対象。</p>
+<h3>第3条 取得元（ホワイトリスト制・ドメイン単位）</h3>
+<p>platforms: instagram.com, tiktok.com, x.com, youtube.com, threads.net は個別URLのoEmbedのみ。YouTubeはData API v3。正規メディア: ORICON, ナタリー, モデルプレスはRSSタイトル+リンクのみ。</p>
+<h3>第4条 キーワード登録</h3><p>正式名+最大3件、端末内のみ。初期表示は空白。</p>
+<h3>第5条 表示形式</h3><p>タイトル+リンクのみ。</p>
+<h3>第6条 学習</h3><p>「違う」で非表示+匿名学習。</p>
+<h3>第7条 禁止事項</h3><p>スクレイピング、営利転載禁止。</p>
+<h3>第8条 免責</h3><p>公式情報は各公式サイトを確認。</p>
+<h3>第9条 変更</h3><p>変更時は本ページで告知。</p>
+<h3>第10条 準拠法</h3><p>日本法、東京地裁管轄。</p>
+
+<hr style={{margin:"40px 0"}}/>
+<p style={{fontSize:13, color:"#888"}}>
+プライバシーポリシー: キーワードは端末内(localStorage)のみ保存、サーバー送信なし。YouTube/X/Instagram等の公式API取得時にキーワードとIPが送信されます。第三者提供なし。お問い合わせ info@wachubby.com
+</p>
+</div>
+)
+}
