@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "MnAcqiZwVxps5hcLS8pUz"
+uri = "file://generated-artifacts/oshigoto-video/oshigoto-map-concept-720p.mp4"
+type = "video"
+title = "推しごとマップ — Animated Concept Video"
+description = "8-second vertical 9:16 MP4, 720 × 1280 at 30 fps. Pink-and-green animation with Japanese captions and a visible concept disclaimer. Silent video; not footage of live app features."
+logical_id = "6ff89e2e-5748-474b-9e8a-40258aea5ef3"
+content_hash = "sha256:eaf97ee2a047a489093d28d31f19e98f1648806f558bd4d55c9735901e373b5b"
+size = 719525
+mtime_ms = 1792508598105
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:da96515a-1b10-41f9-b78a-b3c20888a4d1/6ff89e2e-5748-474b-9e8a-40258aea5ef3/90443a48-90ae-48b7-b27f-0eb86a016863"
+storage_version_token = "1792508649851527"
+content_type = "video/mp4"

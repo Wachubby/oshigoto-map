@@ -1,5 +1,5 @@
 run = "npm run dev"
-modules = ["nodejs-24"]
+modules = ["nodejs-24", "python-base-3.13"]
 [deployment]
 build = ["sh", "-c", "npm ci --include=dev --no-audit --no-fund && npm run build"]
 run = ["npm", "start"]
