@@ -8,7 +8,7 @@
 - Install dependencies with `npm install` when setting up a fresh checkout.
 - Validate with `npx tsc --noEmit` and `npm run build`.
 - Production command after building: `npm start`.
-- Publishing uses Autoscale, builds with `npm ci --include=dev --no-audit --no-fund && npm run build`, and starts with `npm start` only. Do not install dependencies during server startup: it delays the readiness check and adds a network dependency.
+- Publishing uses Autoscale, builds with `npm install && npm run build`, and starts with `npm start` only. Do not install dependencies during server startup: it delays the readiness check and adds a network dependency. Replit's documentation no longer supports the legacy `gce` target; retain the existing Autoscale target.
 - Both development and production listen on `0.0.0.0:5000`, mapped to external port 80.
 - After task merges, Replit runs `scripts/post-merge.sh` to install the locked dependencies with `npm ci`, then reconciles/restarts running workflows. This app has no database migrations.
 
