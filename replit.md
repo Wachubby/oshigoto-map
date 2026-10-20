@@ -8,8 +8,9 @@
 - Install dependencies with `npm install` when setting up a fresh checkout.
 - Validate with `npx tsc --noEmit` and `npm run build`.
 - Production command after building: `npm start`.
-- Publishing uses Autoscale, builds with `npm run build`, and starts with `npm start` only. Replit installs dependencies before the build. Do not install dependencies during server startup: it delays the readiness check and adds a network dependency. Retain the existing Autoscale target.
+- Publishing uses Autoscale, builds with `npm ci --include=dev --no-audit --no-fund && npm run build`, and starts with `npm start` only. Development dependencies are included for the TypeScript/Tailwind build even when `NODE_ENV=production`. Do not install dependencies during server startup. Retain the existing Autoscale target.
 - Both development and production listen on `0.0.0.0:5000`, mapped to external port 80.
+- Keep `node_modules/` and `.next/` in `.gitignore`, but never exclude them in `.replitignore`: the production server needs installed Next.js dependencies and the compiled output. Deployment exclusions should only remove files not needed at runtime.
 - After task merges, Replit runs `scripts/post-merge.sh` to install the locked dependencies with `npm ci`, then reconciles/restarts running workflows. This app has no database migrations.
 
 ## Imported demo limitations
