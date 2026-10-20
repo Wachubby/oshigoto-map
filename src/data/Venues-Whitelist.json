@@ -1,0 +1,1158 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-10-18",
+  "description": "Oshigoto Map - Whitelist Venue - 5 regions: Tokyo/Kanto, Osaka/Kansai, Nagoya/Chubu, Sapporo/Hokkaido, Fukuoka/Kyushu",
+  "rules": {
+    "matching": "official account + venue allowlist + future date + event keywords (ライブ/物販/遠征/ワンマン/ツーマン/対バン/リリースイベント/特典会/チェキ会/サイン会)",
+    "not_allowed": "Disneyland, private cafe, casual posts without venue",
+    "oshi_genres": "everything but 11 (maid/concafe) - see oshi_genre_master.json"
+  },
+  "regions": {
+    "kanto": {
+      "label": "東京/関東",
+      "prefs": [
+        "Tokyo",
+        "Kanagawa",
+        "Saitama",
+        "Chiba"
+      ],
+      "count": 40
+    },
+    "kansai": {
+      "label": "大阪/関西",
+      "prefs": [
+        "Osaka",
+        "Hyogo",
+        "Kyoto"
+      ],
+      "count": 12
+    },
+    "chubu": {
+      "label": "名古屋/中部",
+      "prefs": [
+        "Aichi",
+        "Shizuoka"
+      ],
+      "count": 7
+    },
+    "hokkaido": {
+      "label": "札幌/北海道",
+      "prefs": [
+        "Hokkaido"
+      ],
+      "count": 5
+    },
+    "kyushu": {
+      "label": "福岡/九州",
+      "prefs": [
+        "Fukuoka"
+      ],
+      "count": 6
+    }
+  },
+  "venues": [
+    {
+      "id": "zepp_divercity",
+      "name": "Zepp DiverCity (TOKYO)",
+      "aliases": [
+        "Zepp DiverCity"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Koto",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "koto",
+        "tokyo",
+        "zepp divercity",
+        "zepp divercity (tokyo)"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "zepp_haneda",
+      "name": "Zepp Haneda (TOKYO)",
+      "aliases": [
+        "Zepp Haneda"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Ota",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "ota",
+        "tokyo",
+        "zepp haneda",
+        "zepp haneda (tokyo)"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "toyosu_pit",
+      "name": "Toyosu PIT",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Koto",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "toyosu pit",
+        "tokyo",
+        "koto"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "tokyo_dome_city_hall",
+      "name": "TOKYO DOME CITY HALL",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Bunkyo",
+      "type": "hall",
+      "search_keywords": [
+        "tokyo",
+        "tokyo dome city hall",
+        "bunkyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "liquidroom",
+      "name": "LIQUIDROOM Ebisu",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "livehouse",
+      "search_keywords": [
+        "tokyo",
+        "shibuya",
+        "liquidroom ebisu"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "wwwx",
+      "name": "WWW X Shibuya",
+      "aliases": [
+        "WWW X Shibuya"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "livehouse",
+      "search_keywords": [
+        "www x shibuya",
+        "tokyo",
+        "shibuya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "veats_shibuya",
+      "name": "Veats Shibuya",
+      "aliases": [
+        "Veats Shibuya"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "livehouse",
+      "search_keywords": [
+        "tokyo",
+        "shibuya",
+        "veats shibuya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "o_east",
+      "name": "Shibuya O-EAST",
+      "aliases": [
+        "O-EAST"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "livehouse",
+      "search_keywords": [
+        "tokyo",
+        "shibuya",
+        "o-east",
+        "shibuya o-east"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "o_west",
+      "name": "Shibuya O-WEST",
+      "aliases": [
+        "O-WEST"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "livehouse",
+      "search_keywords": [
+        "o-west",
+        "shibuya o-west",
+        "tokyo",
+        "shibuya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "club_quattro_shibuya",
+      "name": "Shibuya CLUB QUATTRO",
+      "aliases": [
+        "CLUB QUATTRO"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "livehouse",
+      "search_keywords": [
+        "shibuya club quattro",
+        "tokyo",
+        "shibuya",
+        "club quattro"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "duo_shibuya",
+      "name": "duo MUSIC EXCHANGE Shibuya",
+      "aliases": [
+        "duo MUSIC EXCHANGE Shibuya"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "livehouse",
+      "search_keywords": [
+        "tokyo",
+        "shibuya",
+        "duo music exchange shibuya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shibuya_stream_hall",
+      "name": "Shibuya Stream Hall",
+      "aliases": [
+        "Stream Hall"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "hall",
+      "search_keywords": [
+        "shibuya stream hall",
+        "stream hall",
+        "tokyo",
+        "shibuya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shinjuku_blaze",
+      "name": "Shinjuku BLAZE",
+      "aliases": [
+        "BLAZE"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "livehouse",
+      "search_keywords": [
+        "shinjuku",
+        "tokyo",
+        "blaze",
+        "shinjuku blaze"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shinjuku_loft",
+      "name": "Shinjuku Loft",
+      "aliases": [
+        "Loft"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "livehouse",
+      "search_keywords": [
+        "loft",
+        "shinjuku",
+        "tokyo",
+        "shinjuku loft"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shinjuku_marz",
+      "name": "Shinjuku MARZ",
+      "aliases": [
+        "MARZ"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "shinjuku",
+        "shinjuku marz",
+        "marz",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shinjuku_reny",
+      "name": "Shinjuku ReNY",
+      "aliases": [
+        "ReNY"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "livehouse",
+      "search_keywords": [
+        "shinjuku",
+        "shinjuku reny",
+        "reny",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shinjuku_face",
+      "name": "Shinjuku FACE",
+      "aliases": [
+        "FACE"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "livehouse",
+      "search_keywords": [
+        "shinjuku face",
+        "shinjuku",
+        "face",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "akabane_reny",
+      "name": "Akabane ReNY alpha",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Kita",
+      "type": "livehouse",
+      "search_keywords": [
+        "kita",
+        "akabane reny alpha",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "ikebukuro_harevutai",
+      "name": "Harevutai Ikebukuro",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Toshima",
+      "type": "livehouse",
+      "search_keywords": [
+        "harevutai ikebukuro",
+        "toshima",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "ikebukuro_blackhole",
+      "name": "Ikebukuro BlackHole",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Toshima",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "toshima",
+        "ikebukuro blackhole",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "twinbox_akiba",
+      "name": "TwinBox AKIHABARA",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "tokyo",
+        "twinbox akihabara",
+        "chiyoda"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "twinbox_garage",
+      "name": "TwinBox GARAGE Akihabara",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "tokyo",
+        "twinbox garage akihabara",
+        "chiyoda"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "parms_akiba",
+      "name": "AKIHABARA P.A.R.M.S",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "akihabara p.a.r.m.s",
+        "tokyo",
+        "chiyoda"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "goodman_akiba",
+      "name": "Akihabara GOODMAN",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "akihabara goodman",
+        "tokyo",
+        "chiyoda"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kanda_myojin_hall",
+      "name": "Kanda Myojin Hall",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "hall",
+      "search_keywords": [
+        "kanda myojin hall",
+        "tokyo",
+        "chiyoda"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "asakusa_vampkin",
+      "name": "Asakusa VAMPKIN",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Taito",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "taito",
+        "asakusa vampkin",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shimokitazawa_shangrila",
+      "name": "Shimokitazawa Shangri-La",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Setagaya",
+      "type": "livehouse",
+      "search_keywords": [
+        "shimokitazawa shangri-la",
+        "setagaya",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shimokitazawa_mosaic",
+      "name": "Shimokitazawa MOSAiC",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Setagaya",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "setagaya",
+        "shimokitazawa mosaic",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "shibuya_kinmirai",
+      "name": "Shibuya Kinmirai Kaikan",
+      "aliases": [
+        "Kinmirai Kaikan"
+      ],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "shibuya kinmirai kaikan",
+        "shibuya",
+        "kinmirai kaikan",
+        "tokyo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "takadanobaba_bs_hall",
+      "name": "Takadanobaba BS Hall",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "hall",
+      "search_keywords": [
+        "shinjuku",
+        "tokyo",
+        "takadanobaba bs hall"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kt_zepp_yokohama",
+      "name": "KT Zepp Yokohama",
+      "aliases": [
+        "Zepp Yokohama",
+        "KT Zepp Yokohama"
+      ],
+      "region": "kanto",
+      "prefecture": "Kanagawa",
+      "city": "Yokohama",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "kt zepp yokohama",
+        "yokohama",
+        "kanagawa",
+        "zepp yokohama"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "yokohama_arena",
+      "name": "Yokohama Arena",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Kanagawa",
+      "city": "Yokohama",
+      "type": "arena",
+      "search_keywords": [
+        "yokohama",
+        "yokohama arena",
+        "kanagawa"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "yokohama_1000club",
+      "name": "Yokohama 1000 CLUB",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Kanagawa",
+      "city": "Yokohama",
+      "type": "livehouse",
+      "search_keywords": [
+        "yokohama 1000 club",
+        "yokohama",
+        "kanagawa"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "yokohama_bay_hall",
+      "name": "Yokohama Bay Hall",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Kanagawa",
+      "city": "Yokohama",
+      "type": "livehouse",
+      "search_keywords": [
+        "yokohama bay hall",
+        "yokohama",
+        "kanagawa"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "f_ad_yokohama",
+      "name": "F.A.D Yokohama",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Kanagawa",
+      "city": "Yokohama",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "f.a.d yokohama",
+        "yokohama",
+        "kanagawa"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "saitama_super_arena",
+      "name": "Saitama Super Arena",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Saitama",
+      "city": "Saitama",
+      "type": "arena",
+      "search_keywords": [
+        "saitama super arena",
+        "saitama"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "heavens_rock_saitama",
+      "name": "HEAVEN'S ROCK Saitama Shintoshin",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Saitama",
+      "city": "Saitama",
+      "type": "livehouse",
+      "search_keywords": [
+        "saitama",
+        "heaven's rock saitama shintoshin"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "makuhari_messe",
+      "name": "Makuhari Messe",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Chiba",
+      "city": "Chiba",
+      "type": "event_hall",
+      "search_keywords": [
+        "makuhari messe",
+        "chiba"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kashiwa_palooza",
+      "name": "Kashiwa PALOOZA",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Chiba",
+      "city": "Kashiwa",
+      "type": "livehouse",
+      "search_keywords": [
+        "chiba",
+        "kashiwa palooza",
+        "kashiwa"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "chiba_look",
+      "name": "Chiba LOOK",
+      "aliases": [],
+      "region": "kanto",
+      "prefecture": "Chiba",
+      "city": "Chiba",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "chiba look",
+        "chiba"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "zepp_osaka_bayside",
+      "name": "Zepp Osaka Bayside",
+      "aliases": [
+        "Zepp Osaka Bayside"
+      ],
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "osaka",
+        "zepp osaka bayside"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "zepp_namba",
+      "name": "Zepp Namba",
+      "aliases": [
+        "Zepp Namba"
+      ],
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "zepp namba",
+        "osaka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "namba_hatch",
+      "name": "Namba Hatch",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "livehouse",
+      "search_keywords": [
+        "namba hatch",
+        "osaka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "bigcat_osaka",
+      "name": "BIGCAT Osaka",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "livehouse",
+      "search_keywords": [
+        "osaka",
+        "bigcat osaka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "club_quattro_umeda",
+      "name": "Umeda CLUB QUATTRO",
+      "aliases": [
+        "CLUB QUATTRO"
+      ],
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "livehouse",
+      "search_keywords": [
+        "umeda club quattro",
+        "osaka",
+        "club quattro"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "banana_hall",
+      "name": "BananaHall Umeda",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "osaka",
+        "bananahall umeda"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "yogibo_meta_valley",
+      "name": "Yogibo META VALLEY / HOLY MOUNTAIN",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "livehouse",
+      "search_keywords": [
+        "yogibo meta valley / holy mountain",
+        "osaka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "umeda_trad",
+      "name": "Umeda TRAD",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "livehouse",
+      "search_keywords": [
+        "umeda trad",
+        "osaka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "amagasaki_blant",
+      "name": "Amagasaki BLANTON",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Hyogo",
+      "city": "Amagasaki",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "hyogo",
+        "amagasaki",
+        "amagasaki blanton"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kobe_harbor_studio",
+      "name": "Kobe Harbor Studio",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Hyogo",
+      "city": "Kobe",
+      "type": "livehouse",
+      "search_keywords": [
+        "kobe harbor studio",
+        "kobe",
+        "hyogo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kyoto_muse",
+      "name": "Kyoto MUSE",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Kyoto",
+      "city": "Kyoto",
+      "type": "livehouse",
+      "search_keywords": [
+        "kyoto muse",
+        "kyoto"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kbs_hall_kyoto",
+      "name": "KBS Hall Kyoto",
+      "aliases": [],
+      "region": "kansai",
+      "prefecture": "Kyoto",
+      "city": "Kyoto",
+      "type": "hall",
+      "search_keywords": [
+        "kbs hall kyoto",
+        "kyoto"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "zepp_nagoya",
+      "name": "Zepp Nagoya",
+      "aliases": [
+        "Zepp Nagoya"
+      ],
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "aichi",
+        "zepp nagoya",
+        "nagoya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "diamond_hall",
+      "name": "DIAMOND HALL Nagoya",
+      "aliases": [],
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "livehouse",
+      "search_keywords": [
+        "diamond hall nagoya",
+        "aichi",
+        "nagoya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "bottom_line",
+      "name": "BOTTOM LINE Nagoya",
+      "aliases": [],
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "livehouse",
+      "search_keywords": [
+        "bottom line nagoya",
+        "aichi",
+        "nagoya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "nagoya_reny",
+      "name": "NAGOYA ReNY limited",
+      "aliases": [],
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "livehouse",
+      "search_keywords": [
+        "nagoya reny limited",
+        "aichi",
+        "nagoya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "ell_fitsall",
+      "name": "ELL / FITS ALL Nagoya",
+      "aliases": [],
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "ell / fits all nagoya",
+        "aichi",
+        "nagoya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "rad_hall_nagoya",
+      "name": "RAD HALL Nagoya",
+      "aliases": [],
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "rad hall nagoya",
+        "aichi",
+        "nagoya"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "livehouse_hamamatsu_madowaku",
+      "name": "LiveHouse Hamamatsu Madowaku",
+      "aliases": [],
+      "region": "chubu",
+      "prefecture": "Shizuoka",
+      "city": "Hamamatsu",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "livehouse hamamatsu madowaku",
+        "shizuoka",
+        "hamamatsu"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "zepp_sapporo",
+      "name": "Zepp Sapporo",
+      "aliases": [
+        "Zepp Sapporo"
+      ],
+      "region": "hokkaido",
+      "prefecture": "Hokkaido",
+      "city": "Sapporo",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "hokkaido",
+        "sapporo",
+        "zepp sapporo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "penny_lane_24",
+      "name": "PENNY LANE 24 Sapporo",
+      "aliases": [],
+      "region": "hokkaido",
+      "prefecture": "Hokkaido",
+      "city": "Sapporo",
+      "type": "livehouse",
+      "search_keywords": [
+        "hokkaido",
+        "sapporo",
+        "penny lane 24 sapporo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "spice_sapporo",
+      "name": "SPiCE Sapporo",
+      "aliases": [],
+      "region": "hokkaido",
+      "prefecture": "Hokkaido",
+      "city": "Sapporo",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "hokkaido",
+        "sapporo",
+        "spice sapporo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "cube_garden",
+      "name": "cube garden Sapporo",
+      "aliases": [],
+      "region": "hokkaido",
+      "prefecture": "Hokkaido",
+      "city": "Sapporo",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "hokkaido",
+        "sapporo",
+        "cube garden sapporo"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "sapporo_factory_hall",
+      "name": "Sapporo Factory Hall",
+      "aliases": [],
+      "region": "hokkaido",
+      "prefecture": "Hokkaido",
+      "city": "Sapporo",
+      "type": "hall",
+      "search_keywords": [
+        "hokkaido",
+        "sapporo",
+        "sapporo factory hall"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "zepp_fukuoka",
+      "name": "Zepp Fukuoka",
+      "aliases": [
+        "Zepp Fukuoka"
+      ],
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "livehouse_large",
+      "search_keywords": [
+        "zepp fukuoka",
+        "fukuoka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "drum_logos",
+      "name": "DRUM LOGOS Fukuoka",
+      "aliases": [],
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "livehouse",
+      "search_keywords": [
+        "drum logos fukuoka",
+        "fukuoka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "drum_be1",
+      "name": "DRUM Be-1 Hakata",
+      "aliases": [],
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "drum be-1 hakata",
+        "fukuoka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "beat_station",
+      "name": "BEAT STATION Fukuoka",
+      "aliases": [],
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "livehouse",
+      "search_keywords": [
+        "fukuoka",
+        "beat station fukuoka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "fukuoka_pockets",
+      "name": "POCKET Fukuoka / Queblick",
+      "aliases": [],
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "fukuoka",
+        "pocket fukuoka / queblick"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "fukuoka_op_s",
+      "name": "OP's Fukuoka",
+      "aliases": [],
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "livehouse_small",
+      "search_keywords": [
+        "fukuoka",
+        "op's fukuoka"
+      ],
+      "allowed": true
+    }
+  ],
+  "maintenance": {
+    "unknown_venue_threshold": 20,
+    "report_interval": "14 days OR 20 unique",
+    "logic": "Report when EITHER hits 20 unique unknown venues OR 14 days passed - whichever first. For first 1-2 months, 20 will hit fast = quicker turnaround. After month 2, raise to 50.",
+    "phase_1": "First 2 months: threshold 20 for quick learning",
+    "phase_2": "After 2 months: threshold 50 to reduce noise",
+    "storage": "src/data/unknown_venues_log.json",
+    "delivery_options": {
+      "current_mvp": "Replit logs + /api/unknown-venues endpoint (need to login to Replit to see logs)",
+      "recommended": "In-app admin page /admin/venues - check on mobile without Replit login",
+      "email": "Requires Resend API - sends to your registered email",
+      "push": "Requires OneSignal/Firebase - pushes to your mobile app"
+    }
+  }
+}

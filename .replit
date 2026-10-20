@@ -1,12 +1,9 @@
 run = "npm start"
-modules = ["nodejs-20"]
-
-[nix]
-channel = "stable-24_05"
+modules = ["nodejs-24"]
 
 [deployment]
+build = ["npm", "run", "build"]
 run = ["npm", "start"]
-build = ["sh", "-c", "npm install && npm run build"]
 deploymentTarget = "autoscale"
 
 [[ports]]

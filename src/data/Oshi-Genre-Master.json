@@ -1,0 +1,179 @@
+[
+  {
+    "id": 1,
+    "jp": "地下アイドル",
+    "en": "Chika Idol",
+    "group": "idol_music",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes",
+    "note": "core"
+  },
+  {
+    "id": 2,
+    "jp": "メジャーアイドル (坂道/48/K-POP含む)",
+    "en": "Major Idol",
+    "group": "idol_music",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes",
+    "note": "core"
+  },
+  {
+    "id": 3,
+    "jp": "バンドマン / アーティスト / シンガー",
+    "en": "Band / Artist",
+    "group": "idol_music",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 4,
+    "jp": "声優",
+    "en": "Seiyuu",
+    "group": "idol_music",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 5,
+    "jp": "VTuber / Vライバー / 2.5次元",
+    "en": "VTuber / VLiver",
+    "group": "idol_music",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 6,
+    "jp": "コスプレイヤー",
+    "en": "Cosplayer",
+    "group": "visual_model",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes",
+    "note": "famous cosplayers as Oshi - you said yes"
+  },
+  {
+    "id": 7,
+    "jp": "グラビアアイドル",
+    "en": "Gravure",
+    "group": "visual_model",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 8,
+    "jp": "モデル / 被写体モデル",
+    "en": "Model / Portrait Model",
+    "group": "visual_model",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 9,
+    "jp": "レースクイーン / アンバサダー",
+    "en": "Race Queen",
+    "group": "visual_model",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes",
+    "note": "circuit tours - Fuji, Suzuka, etc - map useful"
+  },
+  {
+    "id": 10,
+    "jp": "コンパニオン / キャンギャル / イベコン",
+    "en": "Companion / Campaign Girl",
+    "group": "visual_model",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes",
+    "note": "event halls, motor shows - location changes"
+  },
+  {
+    "id": 11,
+    "jp": "メイド / コンカフェ / ガルバ キャスト",
+    "en": "Maid / Concafe / Girl Bar Cast",
+    "group": "visual_model",
+    "map_useful": false,
+    "calendar_useful": true,
+    "status": "no_v1_opportunity_v2",
+    "note": "Fixed location - calendar=shift, map=single pin. Opportunity for v2 with home-pin feature. Excluded from v1."
+  },
+  {
+    "id": 12,
+    "jp": "俳優 / 女優 / 舞台俳優",
+    "en": "Actor / Actress / Stage",
+    "group": "performance",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 13,
+    "jp": "お笑い芸人 / コメディアン",
+    "en": "Comedian",
+    "group": "performance",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 14,
+    "jp": "ダンサー / DJ / パフォーマー",
+    "en": "Dancer / DJ",
+    "group": "performance",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 15,
+    "jp": "アスリート / スポーツ選手",
+    "en": "Athlete",
+    "group": "sports",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 16,
+    "jp": "格闘家 / プロレスラー",
+    "en": "Fighter / Wrestler",
+    "group": "sports",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 17,
+    "jp": "eスポーツ / プロゲーマー",
+    "en": "Esports",
+    "group": "sports",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 18,
+    "jp": "YouTuber / TikToker / 配信者 / ライバー",
+    "en": "YouTuber / Streamer",
+    "group": "net",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  },
+  {
+    "id": 19,
+    "jp": "クリエイター / 絵師 (チェキ会)",
+    "en": "Creator (does cheki-kai)",
+    "group": "net",
+    "map_useful": true,
+    "calendar_useful": true,
+    "status": "yes"
+  }
+]
