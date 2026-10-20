@@ -2,3 +2,4 @@
 - [Official social-source boundaries](official-social-source-boundaries.md) — use public oEmbed for explicit Instagram/YouTube links and whitelisted RSS; never search arbitrary profiles.
 - [Deployment port coordination](deployment-port-coordination.md) — change the server bind port, workflow wait port, and single public port mapping together.
 - [Deployment runtime packaging](deployment-runtime-packaging.md) — Git exclusions are not deployment exclusions; verify startup from an isolated runtime bundle.
+- [Dependency lock validation](dependency-lock-validation.md) — successful npm install does not prove npm ci compatibility; existing installations can hide optional dependency metadata gaps.

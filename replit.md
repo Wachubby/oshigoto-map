@@ -2,6 +2,7 @@
 
 ## Running on Replit
 - Stack: Next.js App Router, React, TypeScript, Tailwind CSS 3.
+- Use the Node.js 24 Replit module; do not add an older Nix Node.js package that overrides it.
 - The imported Next.js 14 release was blocked by the package security policy for a critical vulnerability. Next.js and React were updated together to compatible current releases; the app structure was preserved.
 - The **Start application** workflow currently runs `npm start` to verify the production server. Run `npm run build` first after changing application code. For hot-reloading development, use `npm run dev` instead.
 - The server listens on `0.0.0.0:5000` for Replit Preview.

@@ -1,26 +1,24 @@
-run = "npm run dev"
-modules = ["nodejs-24", "python-base-3.13"]
+run = "npm start"
+modules = ["nodejs-24"]
+
 [deployment]
-build = ["sh", "-c", "npm ci --include=dev --no-audit --no-fund && npm run build"]
+build = ["bash", "-c", "npm ci --include=dev --no-audit --no-fund && npm run build"]
 run = ["npm", "start"]
 deploymentTarget = "autoscale"
 
 [[ports]]
 localPort = 5000
 externalPort = 80
+
 [nix]
 channel = "stable-24_05"
-packages = ["nodejs_22"]
+packages = []
+
 [env]
 NODE_ENV = "production"
 HOST = "0.0.0.0"
 HOSTNAME = "0.0.0.0"
 NODE_OPTIONS = "--no-network-family-autoselection"
-
-[userenv]
-
-[userenv.shared]
-PORT = "5000"
 
 [workflows]
 runButton = "Project"
