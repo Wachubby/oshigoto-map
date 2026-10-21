@@ -15,7 +15,7 @@ export type UnknownVenueEntry = {
   lastSeen: string;
   examples: string[];
   suspectedRegion?: string;
-}
+} CT
 
 export type UnknownVenueLog = Record<string, UnknownVenueEntry>;
 
