@@ -1,269 +1,344 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import venuesData from '@/data/venues_whitelist.json';
 import oshiTypes from '@/data/oshi_types.json';
 
-// Full Oshigoto Map UI - Map + Calendar + Social + List
-export default function OshigotoMapPage() {
-  const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<'map' | 'calendar' | 'social' | 'list'>('map');
-  const [region, setRegion] = useState<string>('all');
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const mapRef = useRef<HTMLDivElement>(null);
+type SpotType = 'oshigoto' | 'livehouse' | 'cafe' | 'shop';
+type Tab = 'map' | 'list' | 'fav' | 'mypage';
 
-  useEffect(() => setMounted(true), []);
+interface Spot {
+  id: string;
+  name: string;
+  type: SpotType;
+  lat: number; // % top
+  lng: number; // % left
+  ward: string;
+}
+
+const MOCK_SPOTS: Spot[] = [
+  { id: '1', name: 'Veats Shibuya', type: 'oshigoto', lat: 42, lng: 38, ward: '渋谷区' },
+  { id: '2', name: 'Shibuya O-EAST', type: 'livehouse', lat: 32, lng: 52, ward: '渋谷区' },
+  { id: '3', name: 'LIQUIDROOM', type: 'oshigoto', lat: 68, lng: 58, ward: '港区' },
+  { id: '4', name: 'Shibuya Stream Hall', type: 'cafe', lat: 18, lng: 46, ward: '新宿区' },
+  { id: '5', name: 'Akihabara P.A.R.M.S', type: 'shop', lat: 26, lng: 74, ward: '千代田区' },
+  { id: '6', name: 'TwinBox AKIHA', type: 'cafe', lat: 60, lng: 18, ward: '目黒区' },
+  { id: '7', name: 'Shinjuku BLAZE', type: 'shop', lat: 70, lng: 76, ward: '中央区' },
+  { id: '8', name: 'Zepp DiverCity', type: 'livehouse', lat: 15, lng: 50, ward: '港区' },
+];
+
+export default function OshigotoMapOriginal() {
+  const [mounted, setMounted] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardStep, setOnboardStep] = useState(0);
+  const [activeTab, setActiveTab] = useState<Tab>('map');
+  const [activeFilter, setActiveFilter] = useState<SpotType | 'all'>('oshigoto');
+  const [oshiKeywords, setOshiKeywords] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    setMounted(true);
+    const onboarded = localStorage.getItem('oshi-onboarded');
+    if (!onboarded) setShowOnboarding(true);
+    const savedKeywords = localStorage.getItem('oshi-keywords');
+    if (savedKeywords) setOshiKeywords(savedKeywords);
+  }, []);
+
+  useEffect(() => {
+    if (oshiKeywords) localStorage.setItem('oshi-keywords', oshiKeywords);
+  }, [oshiKeywords]);
 
   const venues = (venuesData as any).venues as any[];
-  const regions = (venuesData as any).regions;
-  const yesTypes = (oshiTypes as any[]).filter(t => t.status === 'yes');
-  const filtered = region === 'all' ? venues : venues.filter(v => v.region === region);
-  const filteredBySearch = searchQuery 
-    ? filtered.filter(v => v.name.toLowerCase().includes(searchQuery.toLowerCase()) || v.search_keywords?.some((k:string) => k.includes(searchQuery.toLowerCase())))
-    : filtered;
+  const yesTypes = (oshiTypes as any[]).filter((t:any) => t.status === 'yes');
 
-  // Whitelist search API (existing /api/whitelist-search)
-  useEffect(() => {
-    if (!searchQuery || searchQuery.length < 2) { setSearchResults([]); return; }
-    const t = setTimeout(async () => {
-      try {
-        const res = await fetch(`/api/whitelist-search?q=${encodeURIComponent(searchQuery)}`);
-        if (res.ok) setSearchResults(await res.json());
-      } catch {}
-    }, 300);
-    return () => clearTimeout(t);
-  }, [searchQuery]);
+  const filteredSpots = activeFilter === 'all' ? MOCK_SPOTS : MOCK_SPOTS.filter(s => s.type === activeFilter);
+  const displaySpots = searchQuery ? filteredSpots.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase())) : filteredSpots;
 
-  // Calendar helpers
-  const year = selectedDate.getFullYear();
-  const month = selectedDate.getMonth();
-  const daysInMonth = new Date(year, month+1, 0).getDate();
-  const firstDay = new Date(year, month, 1).getDay();
-  const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  if (!mounted) return <div style={{padding:20, fontFamily:'sans-serif'}}>推しごとマップ読み込み中...</div>;
 
-  if (!mounted) {
-    return <div style={{padding:20}}>おしごとマップ読み込み中...</div>;
+  // Onboarding - matches your video: green Japan map + pink pins
+  if (showOnboarding) {
+    const steps = [
+      { title: '推しを登録', sub: '好きなアーティストをひとつ', img: '🩷', desc: '推しごとマップ\n推しと、次楽しみへ。' },
+      { title: '日本のツアーをイメージ', sub: '行った場所、見かけよう', img: '🗺️', desc: '推しごとマップ\n推しと、次楽しみへ。' },
+      { title: '予定と最新情報をチェック', sub: 'カレンダーとニュースをひと目で', img: '📅', desc: '推しごとマップ\n推しと、次楽しみへ。' },
+    ];
+    const step = steps[onboardStep];
+    return (
+      <div className="min-h-screen bg-[#fff7fb] flex flex-col items-center justify-center p-6 text-center">
+        <div className="max-w-[380px] w-full">
+          <h1 className="text-[22px] font-black tracking-tight">推しごとマップ</h1>
+          <p className="text-[12px] text-gray-600 mt-1">推しと、次楽しみへ。</p>
+          <div className="mt-2 inline-block px-3 py-1 bg-[#ffd6e8] text-[11px] rounded-full font-bold">コンセプトムービー</div>
+          
+          <div className="mt-8 h-[380px] bg-white rounded-[24px] border shadow-sm relative overflow-hidden flex items-center justify-center">
+            {/* Green Japan Map - original green base you had */}
+            <div className="relative w-[240px] h-[320px]">
+              <div className="absolute inset-0 bg-[#c8e6c9] rounded-[20px]" style={{clipPath:'polygon(20% 0%, 80% 5%, 85% 20%, 75% 35%, 80% 60%, 70% 85%, 40% 90%, 15% 75%, 10% 40%)'}} />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-[60px]">🗾</div>
+              </div>
+              {/* Pins */}
+              {onboardStep === 0 && <div className="absolute left-[30%] bottom-[20%] text-[32px]">📍</div>}
+              {onboardStep === 1 && (
+                <>
+                  <div className="absolute left-[20%] bottom-[15%] text-[36px]">📍</div>
+                  <div className="absolute left-[50%] top-[40%] text-[36px]">📍</div>
+                  <div className="absolute left-[75%] top-[5%] text-[36px]">📍</div>
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{zIndex:0}}>
+                    <path d="M 60 250 Q 120 200 150 130" stroke="#ff2d78" strokeWidth="2" fill="none" strokeDasharray="6 4" />
+                    <path d="M 150 130 Q 190 70 220 30" stroke="#ff2d78" strokeWidth="2" fill="none" strokeDasharray="6 4" />
+                  </svg>
+                </>
+              )}
+              {onboardStep >= 2 && (
+                <>
+                  <div className="absolute left-[20%] bottom-[15%] text-[36px]">📍</div>
+                  <div className="absolute left-[50%] top-[40%] text-[36px]">📍</div>
+                  <div className="absolute left-[75%] top-[5%] text-[36px]">📍</div>
+                </>
+              )}
+            </div>
+            {onboardStep >= 1 && onboardStep <= 2 && (
+              <div className="absolute bottom-[70px] left-1/2 -translate-x-1/2 w-[80%] h-[2px] bg-gray-200 rounded">
+                <div className="h-full bg-[#ff2d78] rounded" style={{width: onboardStep===1 ? '50%' : '80%'}} />
+              </div>
+            )}
+          </div>
+
+          <div className="mt-6">
+            <h2 className="font-bold text-[16px]">{step.title}</h2>
+            <p className="text-[12px] text-gray-600 mt-1">{step.sub}</p>
+            <p className="text-[9px] text-gray-400 mt-6 leading-[1.4]">開発中の画面イメージ<br/>実際の画像・公式情報ではありません</p>
+          </div>
+
+          <div className="mt-8 flex justify-center gap-2">
+            {[0,1,2].map(i => (
+              <div key={i} className={`h-[3px] rounded-full transition-all ${i===onboardStep ? 'w-[32px] bg-[#ff2d78]' : 'w-[24px] bg-gray-200'}`} />
+            ))}
+          </div>
+
+          <button onClick={() => {
+            if (onboardStep < 2) setOnboardStep(onboardStep+1);
+            else { localStorage.setItem('oshi-onboarded','true'); setShowOnboarding(false); }
+          }} className="mt-6 w-full py-[14px] bg-black text-white rounded-full font-bold text-[14px]">
+            {onboardStep < 2 ? '次へ' : '推しを登録してはじめる'}
+          </button>
+          {onboardStep > 0 && (
+            <button onClick={() => setOnboardStep(onboardStep-1)} className="mt-2 text-[12px] text-gray-500">戻る</button>
+          )}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <main className="min-h-screen bg-[#fafafa] text-black">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b">
-        <div className="max-w-[1400px] mx-auto px-4 py-3 flex items-center justify-between">
-          <div>
-            <h1 className="text-xl md:text-2xl font-black tracking-tight">おしごとマップ - Oshigoto Map</h1>
-            <p className="text-[11px] md:text-xs text-gray-500">公式アカウント + 会場ホワイトリスト + 未来日付 + イベントキーワード</p>
-          </div>
-          <div className="hidden md:flex gap-2 text-[10px]">
-            <span className="px-2 py-1 bg-black text-white rounded-full">{yesTypes.length}ジャンル</span>
-            <span className="px-2 py-1 bg-white border rounded-full">{venues.length}会場</span>
-            <span className="px-2 py-1 bg-white border rounded-full">しきい値: 20 or 14日</span>
-          </div>
+    <div className="min-h-screen bg-[#fafafa] flex flex-col max-w-[480px] mx-auto md:max-w-[1400px] shadow-[0_0_0_1px_rgba(0,0,0,0.05)]">
+      {/* Header - matches screenshot: 推しごとマップ oshigoto-map */}
+      <header className="bg-white px-4 py-3 flex items-center justify-between sticky top-0 z-20 border-b">
+        <button className="p-2 -ml-2">☰</button>
+        <div className="text-center">
+          <h1 className="text-[24px] md:text-[28px] font-black tracking-tight leading-none">推しごとマップ</h1>
+          <p className="text-[12px] text-gray-500 tracking-widest">oshigoto-map</p>
         </div>
-        
-        {/* Tabs */}
-        <div className="max-w-[1400px] mx-auto px-4 flex gap-1 pb-2 overflow-x-auto">
-          {[
-            {id:'map', label:'🗺️ Map', sub:`${filteredBySearch.length}`},
-            {id:'calendar', label:'📅 Calendar', sub:'おしごと'},
-            {id:'social', label:'📱 Social', sub:'公式'},
-            {id:'list', label:'📋 List', sub:'70'},
-          ].map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap border transition ${activeTab===tab.id ? 'bg-black text-white border-black' : 'bg-white hover:bg-gray-100'}`}>
-              {tab.label} <span className="ml-1 text-[10px] opacity-70">{tab.sub}</span>
-            </button>
-          ))}
-          <div className="ml-auto flex gap-2">
-            <input value={searchQuery} onChange={e=>setSearchQuery(e.target.value)} placeholder="会場検索 / venue search" className="px-3 py-2 border rounded-lg text-sm w-[180px] md:w-[260px]" />
-          </div>
-        </div>
+        <button className="p-2 -mr-2 text-[20px]">🔍</button>
       </header>
 
-      <div className="max-w-[1400px] mx-auto px-4 py-4">
-        {/* Region filter */}
-        <div className="flex gap-2 mb-4 flex-wrap">
-          <button onClick={() => setRegion('all')} className={`px-3 py-1.5 rounded-full text-xs md:text-sm border font-bold ${region==='all'?'bg-black text-white border-black':'bg-white'}`}>すべて ({venues.length})</button>
-          {Object.keys(regions).map(r => (
-            <button key={r} onClick={() => setRegion(r)} className={`px-3 py-1.5 rounded-full text-xs md:text-sm border ${region===r?'bg-black text-white border-black':'bg-white'}`}>
-              {regions[r].label} ({regions[r].count})
-            </button>
+      {activeTab === 'map' && (
+        <>
+          {/* Filters - おしごと活動 / ライブハウス / カフェ / ショップ */}
+          <div className="bg-white px-3 py-3 flex gap-2 overflow-x-auto border-b">
+            {[
+              { id: 'oshigoto', label: 'おしごと活動', icon: '💖', color: 'bg-[#ffe4ec] border-[#ff2d78] text-[#ff2d78]' },
+              { id: 'livehouse', label: 'ライブハウス', icon: '🎵', color: 'bg-gray-100' },
+              { id: 'cafe', label: 'カフェ', icon: '☕', color: 'bg-gray-100' },
+              { id: 'shop', label: 'ショップ', icon: '🛍️', color: 'bg-gray-100' },
+            ].map(f => (
+              <button key={f.id} onClick={() => setActiveFilter(f.id as any)}
+                className={`px-4 py-2 rounded-full text-[13px] font-bold whitespace-nowrap border flex items-center gap-1 transition ${activeFilter===f.id ? f.color + ' border' : 'bg-[#f0f0f0] border-transparent text-gray-700'}`}>
+                <span>{f.icon}</span> {f.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Map - Tokyo centered like your screenshot */}
+          <div className="flex-1 relative bg-[#eef2f5] h-[calc(100vh-180px)] md:h-[640px] overflow-hidden">
+            {/* Street grid */}
+            <div className="absolute inset-0 opacity-[0.08]" style={{backgroundImage:`linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`, backgroundSize:'40px 40px'}} />
+            
+            {/* Wards labels - like screenshot */}
+            <div className="absolute top-[18%] left-[12%] text-[12px] font-bold bg-white/80 px-2 py-1 rounded">新宿区</div>
+            <div className="absolute top-[22%] right-[12%] text-[12px] font-bold bg-white/80 px-2 py-1 rounded">千代田区</div>
+            <div className="absolute top-[38%] left-[28%] text-[12px] font-bold bg-white/80 px-2 py-1 rounded">渋谷区</div>
+            <div className="absolute top-[36%] right-[34%] text-[12px] font-bold bg-white/80 px-2 py-1 rounded">港区</div>
+            <div className="absolute top-[44%] left-[52%] text-[11px] bg-white/60 px-1 rounded">原宿</div>
+            <div className="absolute top-[52%] left-[48%] text-[12px] font-bold bg-white/80 px-2 py-1 rounded">原宿</div>
+            <div className="absolute top-[54%] right-[16%] text-[12px] font-bold bg-white/80 px-2 py-1 rounded">中央区</div>
+            <div className="absolute top-[72%] left-[6%] text-[12px] font-bold bg-white/80 px-2 py-1 rounded">目黒区</div>
+            <div className="absolute bottom-[20%] left-[40%] text-[10px] text-gray-500">国道246号</div>
+            <div className="absolute bottom-[18%] right-[16%] text-[9px] text-gray-400">明治神宮外苑</div>
+
+            {/* Pins */}
+            {displaySpots.map(spot => {
+              const colors: Record<SpotType, string> = {
+                oshigoto: 'bg-[#ff4d8d] text-white',
+                livehouse: 'bg-[#7c6cff] text-white',
+                cafe: 'bg-[#c67a2b] text-white',
+                shop: 'bg-[#4caf82] text-white',
+              };
+              const icons: Record<SpotType, string> = {
+                oshigoto: '💖',
+                livehouse: '🎵',
+                cafe: '☕',
+                shop: '🛍️',
+              };
+              return (
+                <div key={spot.id} className="absolute -translate-x-1/2 -translate-y-full cursor-pointer group" style={{left:`${spot.lng}%`, top:`${spot.lat}%`}}>
+                  <div className={`w-[36px] h-[36px] rounded-full rounded-br-[2px] rotate-[-45deg] flex items-center justify-center shadow-lg ${colors[spot.type]} group-hover:scale-110 transition`}>
+                    <span className="rotate-[45deg] text-[16px]">{icons[spot.type]}</span>
+                  </div>
+                  <div className="absolute top-[36px] left-1/2 -translate-x-1/2 bg-white text-[9px] px-1.5 py-0.5 rounded shadow whitespace-nowrap opacity-0 group-hover:opacity-100 transition">
+                    {spot.name}
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Current location blue dot */}
+            <div className="absolute left-[48%] top-[58%] w-[24px] h-[24px] bg-[#3b82f6] rounded-full border-[4px] border-white shadow-lg flex items-center justify-center">
+              <div className="w-[8px] h-[8px] bg-white rounded-full" />
+              <div className="absolute w-[32px] h-[32px] bg-blue-400/30 rounded-full animate-ping" />
+            </div>
+
+            {/* Zoom buttons */}
+            <div className="absolute right-4 bottom-[100px] flex flex-col gap-2">
+              <button className="w-[48px] h-[48px] bg-white rounded-full shadow-lg flex items-center justify-center text-[24px] font-light">+</button>
+              <button className="w-[48px] h-[48px] bg-white rounded-full shadow-lg flex items-center justify-center text-[24px] font-light">−</button>
+            </div>
+
+            {/* Scale */}
+            <div className="absolute left-3 bottom-[88px] bg-white/90 px-3 py-1 rounded-lg text-[11px] shadow">
+              <div className="w-[60px] h-[2px] bg-black mb-1" />
+              500m
+            </div>
+
+            {/* Bottom sheet */}
+            <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[16px] shadow-[0_-4px_20px_rgba(0,0,0,0.1)] px-4 py-3 flex items-center justify-between">
+              <div className="text-[13px] font-bold">表示中：{displaySpots.length}件のスポット</div>
+              <div className="flex gap-3 text-[11px]">
+                <span className="flex items-center gap-1"><span className="w-[8px] h-[8px] rounded-full bg-[#ff4d8d]" />おしごと</span>
+                <span className="flex items-center gap-1"><span className="w-[8px] h-[8px] rounded-full bg-[#7c6cff]" />ライブハウス</span>
+                <span className="flex items-center gap-1"><span className="w-[8px] h-[8px] rounded-full bg-[#c67a2b]" />カフェ</span>
+                <span className="flex items-center gap-1"><span className="w-[8px] h-[8px] rounded-full bg-[#4caf82]" />ショップ</span>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {activeTab === 'list' && (
+        <div className="p-4 space-y-2">
+          <div className="text-[12px] text-gray-500 mb-2">対応: {yesTypes.length}ジャンル / {venues.length}会場 / しきい値: 20 or 14日</div>
+          {venues.slice(0,20).map((v:any) => (
+            <div key={v.id} className="bg-white p-3 rounded-xl border flex justify-between">
+              <div>
+                <div className="font-bold text-[13px]">{v.name}</div>
+                <div className="text-[11px] text-gray-500">{v.region} / {v.prefecture} / {v.type}</div>
+              </div>
+              <span className="text-[10px] px-2 py-1 bg-[#ffe4ec] text-[#ff2d78] rounded-full h-fit">{v.search_keywords?.[0] || 'ライブ'}</span>
+            </div>
           ))}
         </div>
+      )}
 
-        {/* MAP TAB */}
-        {activeTab==='map' && (
-          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-4">
-            <div ref={mapRef} className="h-[520px] md:h-[720px] bg-white border rounded-xl overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-green-50 flex flex-col items-center justify-center p-6 text-center">
-                <div className="text-5xl mb-3">🗺️</div>
-                <div className="font-bold">Map View - {region==='all'?'全国':regions[region]?.label}</div>
-                <div className="text-xs text-gray-600 mt-1 max-w-[320px]">Google Maps / Mapbox pins here. {filteredBySearch.length}会場表示中. Client-only rendering to keep healthcheck passing.</div>
-                <div className="mt-4 grid grid-cols-2 gap-2 w-full max-w-[400px] text-[11px]">
-                  {filteredBySearch.slice(0,8).map(v=>(
-                    <div key={v.id} className="bg-white border rounded px-2 py-1 text-left truncate">📍 {v.name}</div>
-                  ))}
-                </div>
-                <div className="mt-3 text-[10px] text-gray-400">Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY in Secrets to enable real map</div>
-              </div>
-            </div>
-            <div className="space-y-2 max-h-[720px] overflow-auto pr-1">
-              <div className="text-xs font-bold text-gray-500 uppercase tracking-widest">{filteredBySearch.length} venues - {region}</div>
-              {filteredBySearch.map(v=>(
-                <div key={v.id} className="bg-white border rounded-xl p-3 hover:shadow-md transition">
-                  <div className="font-bold text-sm">{v.name}</div>
-                  <div className="text-[11px] text-gray-600 mt-1">{v.region} / {v.prefecture} {v.city} / {v.type}</div>
-                  <div className="flex gap-1 mt-2 flex-wrap">
-                    {v.aliases?.slice(0,3).map((a:string)=><span key={a} className="text-[10px] px-2 py-0.5 bg-gray-100 rounded-full">{a}</span>)}
-                  </div>
-                  <div className="mt-2 flex gap-2">
-                    <a href={`https://maps.google.com/?q=${encodeURIComponent(v.name)}`} target="_blank" className="text-[11px] px-2 py-1 bg-black text-white rounded">Open Map</a>
-                    <span className="text-[11px] px-2 py-1 border rounded">{v.search_keywords?.[0]}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* CALENDAR TAB */}
-        {activeTab==='calendar' && (
-          <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-4">
-            <div className="bg-white border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-4">
-                <button onClick={()=>setSelectedDate(new Date(year, month-1, 1))} className="px-3 py-1 border rounded">‹</button>
-                <div className="font-black">{year}年 {monthNames[month]}</div>
-                <button onClick={()=>setSelectedDate(new Date(year, month+1, 1))} className="px-3 py-1 border rounded">›</button>
-              </div>
-              <div className="grid grid-cols-7 gap-1 text-center text-[11px] text-gray-500 mb-1">
-                {['日','月','火','水','木','金','土'].map(d=><div key={d}>{d}</div>)}
-              </div>
-              <div className="grid grid-cols-7 gap-1">
-                {Array.from({length:firstDay}).map((_,i)=><div key={`e-${i}`} />)}
-                {Array.from({length:daysInMonth}).map((_,i)=>{
-                  const d = i+1;
-                  const isToday = new Date().getDate()===d && new Date().getMonth()===month && new Date().getFullYear()===year;
-                  const isSelected = selectedDate.getDate()===d;
-                  return (
-                    <button key={d} onClick={()=>setSelectedDate(new Date(year, month, d))}
-                      className={`h-10 md:h-12 border rounded-lg text-sm ${isSelected?'bg-black text-white border-black font-bold': isToday?'bg-blue-50 border-blue-300': 'bg-white hover:bg-gray-50'}`}>
-                      {d}
-                      <div className="text-[8px] opacity-70">•</div>
-                    </button>
-                  )
-                })}
-              </div>
-              <div className="mt-4 text-[11px] text-gray-600">
-                選択: {year}/{month+1}/{selectedDate.getDate()} - 公式アカウントの投稿から未来日付のイベントを抽出
-              </div>
-            </div>
-            <div className="space-y-3">
-              <div className="bg-white border rounded-xl p-4">
-                <div className="font-bold">📅 {year}/{month+1}/{selectedDate.getDate()} のおしごと</div>
-                <div className="text-xs text-gray-500 mt-1">この日のホワイトリスト会場イベント (モック - /api/unknown-venues と連携予定)</div>
-                <div className="mt-3 space-y-2">
-                  {filtered.slice(0,5).map(v=>(
-                    <div key={v.id} className="flex gap-3 p-2 border rounded-lg">
-                      <div className="text-[11px] px-2 py-1 bg-gray-100 rounded h-fit">{['19:00','19:30','20:00'][Math.floor(Math.random()*3)]}</div>
-                      <div>
-                        <div className="font-bold text-sm">{v.name}</div>
-                        <div className="text-[11px] text-gray-600">ライブ / 特典会 / チェキ会 • {v.prefecture}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-white border rounded-xl p-4">
-                <div className="font-bold text-sm">対応ジャンル 18種 (maid除く v1)</div>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {yesTypes.map(t=>(
-                    <span key={t.id} className="text-[10px] px-2 py-1 bg-black text-white rounded-full">{t.jp}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* SOCIAL TAB */}
-        {activeTab==='social' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2 space-y-3">
-              <div className="bg-white border rounded-xl p-4">
-                <div className="font-black">📱 公式アカウント フィード</div>
-                <div className="text-xs text-gray-500">ホワイトリスト会場 + 未来日付 + キーワード (ライブ/物販/遠征/ワンマン/特典会/チェキ会/サイン会) でフィルタ</div>
-                <div className="mt-4 space-y-3">
-                  {[
-                    {name:'地下アイドルA', handle:'@chika_a', text:'【ライブ情報】12/15(日) Shibuya O-EAST にてワンマンライブ決定！🎤 チケット発売中 #おしごと', venue:'Shibuya O-EAST', time:'2時間前'},
-                    {name:'バンドB', handle:'@band_b', text:'明日は Veats Shibuya にて対バン！物販あります📸 チェキ会もやるよ', venue:'Veats Shibuya', time:'5時間前'},
-                    {name:'コスプレイヤーC', handle:'@cos_c', text:'12/20 コミケ参加決定！サイン会やります✍️ 場所は...', venue:'Tokyo Big Sight', time:'昨日'},
-                  ].map((post,i)=>(
-                    <div key={i} className="border rounded-xl p-3">
-                      <div className="flex gap-2">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400" />
-                        <div>
-                          <div className="font-bold text-sm">{post.name} <span className="font-normal text-gray-500 text-xs">{post.handle} • {post.time}</span></div>
-                          <div className="text-sm mt-1">{post.text}</div>
-                          <div className="mt-2 flex gap-2">
-                            <span className="text-[11px] px-2 py-1 bg-blue-50 text-blue-700 rounded-full">📍 {post.venue}</span>
-                            <span className="text-[11px] px-2 py-1 bg-green-50 text-green-700 rounded-full">✅ ホワイトリスト一致</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <div className="bg-white border rounded-xl p-4">
-                <div className="font-bold text-sm">未登録会場モニタ</div>
-                <div className="text-[11px] text-gray-600 mt-1">20件 or 14日でレポート - /api/unknown-venues</div>
-                <div className="mt-2 text-xs p-2 bg-gray-50 rounded border">
-                  threshold: {(venuesData as any).maintenance?.unknown_venue_threshold || 20} / 14日<br/>
-                  current: 0件 (phase1-quick-turnaround)
-                </div>
-              </div>
-              <div className="bg-white border rounded-xl p-4">
-                <div className="font-bold text-sm">検索API</div>
-                <div className="text-[11px] text-gray-600">/api/whitelist-search?q=渋谷</div>
-                {searchResults.length>0 && (
-                  <div className="mt-2 space-y-1 max-h-[200px] overflow-auto">
-                    {searchResults.slice(0,6).map((r:any,i:number)=><div key={i} className="text-xs p-1 border-b">{r.name || JSON.stringify(r).slice(0,60)}</div>)}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* LIST TAB - old whitelist */}
-        {activeTab==='list' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {filteredBySearch.map(v => (
-              <div key={v.id} className="bg-white border rounded-xl p-3 text-sm hover:shadow">
-                <div className="font-bold">{v.name}</div>
-                <div className="text-[11px] text-gray-600">{v.region} / {v.prefecture} {v.city} / {v.type}</div>
-                <div className="text-[11px] mt-1 text-gray-500">{v.aliases?.join(', ')}</div>
+      {activeTab === 'fav' && (
+        <div className="p-6 text-center">
+          <div className="text-[48px]">💖</div>
+          <div className="font-bold mt-2">お気に入り</div>
+          <div className="text-[12px] text-gray-500 mt-1">お気に入りの推しごとスポットがここに表示されます</div>
+          <div className="mt-6 grid grid-cols-2 gap-2">
+            {MOCK_SPOTS.slice(0,4).map(s => (
+              <div key={s.id} className="bg-white p-3 rounded-xl border text-left">
+                <div className="font-bold text-[12px]">{s.name}</div>
+                <div className="text-[10px] text-gray-500">{s.ward}</div>
               </div>
             ))}
           </div>
-        )}
+        </div>
+      )}
 
-        <footer className="mt-10 pt-6 border-t text-[11px] text-gray-500">
-          <div>v{(venuesData as any).version} - {(venuesData as any).updated} • 5 regions: 東京/関東 40, 大阪/関西 12, 名古屋/中部 7, 札幌/北海道 5, 福岡/九州 6</div>
-          <div className="mt-1">除外: Disneyland, private cafe, maid/concafe v1除外 (v2でhome-pin対応予定) • Whitelist 70 venues • 19 genres</div>
-          <div className="mt-2 flex gap-2">
-            <a href="/terms" className="underline">利用規約</a>
-            <span>•</span>
-            <a href="/api/whitelist-search" className="underline">/api/whitelist-search</a>
-            <span>•</span>
-            <span>/api/unknown-venues でレポート</span>
+      {activeTab === 'mypage' && (
+        <div className="p-4 space-y-4">
+          <div className="bg-white rounded-[16px] p-5 border">
+            <h2 className="font-black text-[16px]">推しごとマップ</h2>
+            <p className="text-[12px] text-gray-600 mt-1">ブラウザにローカル保存する推しの活動登録</p>
+            
+            <div className="mt-6">
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-[14px]">推しキーワード (oshi-keywords)</h3>
+                <span className="w-[18px] h-[18px] rounded-full border flex items-center justify-center text-[10px]">i</span>
+              </div>
+              <div className="mt-3 relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2">✨</span>
+                <input value={oshiKeywords} onChange={e=>setOshiKeywords(e.target.value)}
+                  placeholder="oshi-keywords（例: 担当, 現場, 物販, 遠征...）"
+                  className="w-full pl-9 pr-4 py-3 bg-[#f8f8f8] border rounded-[10px] text-[13px]" />
+              </div>
+              <p className="text-[11px] text-gray-500 mt-3 flex gap-2">
+                <span className="w-[16px] h-[16px] rounded-full border flex items-center justify-center text-[9px]">i</span>
+                入力はブラウザの localStorage に保存されます。<br/>デバイスのみに保存・外部送信なし
+              </p>
+            </div>
           </div>
-        </footer>
-      </div>
-    </main>
+
+          <div className="bg-white rounded-[16px] p-5 border border-dashed">
+            <div className="flex gap-4">
+              <div className="w-[40px] h-[40px] bg-gradient-to-br from-pink-200 to-purple-200 rounded-[10px] flex items-center justify-center">📅</div>
+              <div>
+                <h3 className="font-bold">カレンダー表示</h3>
+                <p className="text-[13px] mt-1">予定はまだありません ー</p>
+                <p className="text-[12px] text-gray-500">登録すると日付ごとに表示されます</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-[16px] p-5 border border-dashed">
+            <div className="flex gap-4">
+              <div className="w-[40px] h-[40px] bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">📍</div>
+              <div>
+                <h3 className="font-bold">マップ表示</h3>
+                <p className="text-[13px] mt-1">マップはまだ空です ー</p>
+                <p className="text-[12px] text-gray-500">推し活スポットがここに表示されます</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#fff7fb] rounded-[16px] p-4 border border-pink-100">
+            <div className="text-[11px] text-gray-600">対応ジャンル {yesTypes.length}種 • 会場 {venues.length}件 • ホワイトリスト + 公式 + 未来日付 + キーワード</div>
+            <div className="flex flex-wrap gap-1 mt-2">
+              {yesTypes.slice(0,8).map((t:any) => (
+                <span key={t.id} className="text-[9px] px-2 py-1 bg-white border rounded-full">{t.jp}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom Nav - like screenshot */}
+      <nav className="bg-white border-t flex justify-around py-2 sticky bottom-0 z-20">
+        {[
+          { id:'map', label:'マップ', icon:'📍' },
+          { id:'list', label:'一覧', icon:'☰' },
+          { id:'fav', label:'お気に入り', icon:'♡' },
+          { id:'mypage', label:'マイページ', icon:'👤' },
+        ].map(tab => (
+          <button key={tab.id} onClick={() => setActiveTab(tab.id as Tab)}
+            className={`flex flex-col items-center px-4 py-1 ${activeTab===tab.id ? 'text-[#ff2d78]' : 'text-gray-400'}`}>
+            <span className="text-[22px]">{tab.icon}</span>
+            <span className="text-[10px] font-bold mt-0.5">{tab.label}</span>
+          </button>
+        ))}
+      </nav>
+    </div>
   );
 }
