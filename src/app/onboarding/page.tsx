@@ -4,8 +4,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import oshiTypes from "@/data/oshi_types.json";
 import {
-  OSHI_PROFILE_STORAGE_KEY,
-  parseOshiProfile,
+  readOshiProfile,
+  saveOshiProfile,
   type OshiProfile,
 } from "@/lib/oshi-profile";
 
@@ -18,7 +18,7 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     try {
-      const savedProfile = parseOshiProfile(localStorage.getItem(OSHI_PROFILE_STORAGE_KEY));
+      const savedProfile = readOshiProfile(localStorage);
       if (!savedProfile) return;
       setName(savedProfile.name);
       setOshiType(String(savedProfile.oshi_type));
@@ -54,9 +54,7 @@ export default function OnboardingPage() {
     }
 
     try {
-      const serialized = JSON.stringify(profile);
-      parseOshiProfile(serialized);
-      localStorage.setItem(OSHI_PROFILE_STORAGE_KEY, serialized);
+      saveOshiProfile(localStorage, profile);
       router.replace("/calendar");
     } catch (cause) {
       setError(

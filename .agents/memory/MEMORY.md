@@ -3,3 +3,4 @@
 - [Deployment port coordination](deployment-port-coordination.md) — change the server bind port, workflow wait port, and single public port mapping together.
 - [Deployment runtime packaging](deployment-runtime-packaging.md) — Git exclusions are not deployment exclusions; verify startup from an isolated runtime bundle.
 - [Dependency lock validation](dependency-lock-validation.md) — successful npm install does not prove npm ci compatibility; existing installations can hide optional dependency metadata gaps.
+- [V1 locked product rules](v1-locked-product-rules.md) — only verified whitelist venues become events; unknowns stay review candidates, and social matching depends on group versus solo context.

@@ -2,12 +2,23 @@
 
 import { useState } from "react";
 import { useWhitelistSearch } from "@/hooks/useWhitelistSearch";
+import type { OshiSearchProfile } from "@/lib/oshi-profile";
+import { filterSocialPosts } from "@/lib/filter";
 
-export default function SnsView({ oshi }: { oshi: any }) {
+export default function SnsView({ oshi }: { oshi: OshiSearchProfile }) {
   const { data, loading, error, retry } = useWhitelistSearch(oshi);
   const [hidden, setHidden] = useState<string[]>([]);
   const [menu, setMenu] = useState<string | null>(null);
-  const items = (data?.news ?? []).filter((item) => !hidden.includes(item.id));
+  const news = data?.news ?? [];
+  const socialPosts = news.filter((item) => item.kind === "social");
+  const socialFilter = filterSocialPosts(socialPosts, {
+    name: oshi.formal,
+    helpers: oshi.nicknames,
+  });
+  const allowedSocialIds = new Set(socialFilter.posts.map((post) => post.id));
+  const items = news.filter(
+    (item) => (item.kind !== "social" || allowedSocialIds.has(item.id)) && !hidden.includes(item.id),
+  );
   const newsStatuses = data?.sourceStatuses.filter(
     (source) =>
       source.kind === "official" ||
@@ -22,8 +33,15 @@ export default function SnsView({ oshi }: { oshi: any }) {
   return (
     <div className="h-full space-y-3 overflow-y-auto p-3">
       <div className="rounded bg-gray-50 p-2 text-[11px] text-gray-600">
-        公式サイトとホワイトリスト内のRSSを確認します。Instagram・YouTubeは登録済みの個別投稿／動画URLのみ公式oEmbedで確認し、プロフィール検索は行いません。表示はタイトルとリンクのみです。
+        Mode A/B はホワイトリスト内の情報源から取得できた投稿に適用します。現在、グループ／個人アカウントの投稿元は未登録です。Instagram・YouTubeは登録済みの個別投稿／動画URLのみ確認し、プロフィール検索やスクレイピングは行いません。
       </div>
+      {socialPosts.length > 0 && (
+        <div role="status" className="rounded border border-purple-100 bg-purple-50 p-2 text-xs text-purple-900">
+          {socialFilter.mode === "A"
+            ? `Mode A · ${socialFilter.groupName} の公式グループアカウントから取得できた投稿を表示`
+            : "Mode B · 推し名・ヘルパー名を含む投稿、または個人アカウントの投稿を表示"}
+        </div>
+      )}
 
       {loading && (
         <div role="status" className="rounded-lg border p-4 text-sm text-gray-500">

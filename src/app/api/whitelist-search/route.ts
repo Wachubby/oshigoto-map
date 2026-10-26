@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import whitelist from "@/data/whitelisted_sources.json";
+import venuesWhitelist from "@/data/venues_whitelist.json";
+import { UnknownVenueCollector } from "@/lib/unknown_venue_collector";
+import { classifyVenueEvents } from "@/lib/filter";
 
 type NewsItem = { id:string; source:string; kind:string; title?:string; url:string; publishedAt?:string }
+type EventCandidate = { id:string; source:string; title:string; date:string; venue:string; prefecture?:string; openTime?:string; startTime?:string; url:string }
+
+const unknownVenueCollector = new UnknownVenueCollector();
 
 function plainText(v:string){ return v.replace(/<[^>]*>/g," ").trim() }
 function titleMatchesQuery(title:string, terms:string[]){
@@ -62,8 +68,14 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // 3. EVENTS - now empty = blank Japan map until you add Japan tours
-  const events:any[] = []
+  // An event is approved only when its venue name or alias is on the 70-venue whitelist.
+  // Unlisted venues are sent to the review collector and never returned as approved events.
+  const eventCandidates: EventCandidate[] = []
+  const { approved: events } = classifyVenueEvents(
+    eventCandidates,
+    venuesWhitelist.venues,
+    unknownVenueCollector,
+  )
 
   return NextResponse.json({
     status: news.length || events.length ? "ok" : "empty",

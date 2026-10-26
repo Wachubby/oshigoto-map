@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import CalendarView from "@/components/CalendarView";
+import Calendar from "@/components/Calendar";
 import MapView from "@/components/MapView";
 import SnsView from "@/components/SnsView";
 import { useOshiProfile } from "@/hooks/useOshiProfile";
@@ -75,7 +75,7 @@ export default function OshiFeaturePage({
         </nav>
       </header>
       <section className="min-h-[calc(100dvh-112px)] flex-1">
-        {section === "calendar" && <CalendarView oshi={oshi} />}
+        {section === "calendar" && <Calendar />}
         {section === "map" && <MapView oshi={oshi} />}
         {section === "social" && <SnsView oshi={oshi} />}
       </section>

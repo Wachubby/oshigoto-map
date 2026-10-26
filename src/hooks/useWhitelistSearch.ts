@@ -5,10 +5,14 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 export type NewsItem = {
   id: string;
   source: string;
-  kind: "official" | "media";
+  kind: "official" | "media" | "social";
   title?: string;
   url: string;
   publishedAt?: string;
+  author?: string;
+  authorType?: "group" | "personal" | "other";
+  caption?: string;
+  tags?: string[];
 };
 
 export type EventItem = {
@@ -42,7 +46,7 @@ export type WhitelistSearchResponse = {
 export function useWhitelistSearch(oshi: {
   formal?: string;
   nicknames?: string[];
-}) {
+}, enabled = true) {
   const query = useMemo(
     () => [oshi.formal, ...(oshi.nicknames ?? [])].filter(Boolean).join(","),
     [oshi.formal, oshi.nicknames],
@@ -53,6 +57,13 @@ export function useWhitelistSearch(oshi: {
   const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      setData(null);
+      setError(null);
+      return;
+    }
+
     const controller = new AbortController();
     setLoading(true);
     setError(null);
@@ -81,7 +92,7 @@ export function useWhitelistSearch(oshi: {
       });
 
     return () => controller.abort();
-  }, [query, refresh]);
+  }, [enabled, query, refresh]);
 
   const retry = useCallback(() => setRefresh((value) => value + 1), []);
 

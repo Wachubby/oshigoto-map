@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
-  OSHI_PROFILE_STORAGE_KEY,
-  parseOshiProfile,
+  readOshiProfile,
   type OshiProfile,
 } from "@/lib/oshi-profile";
 
@@ -14,7 +13,7 @@ export function useOshiProfile() {
 
   useEffect(() => {
     try {
-      setProfile(parseOshiProfile(localStorage.getItem(OSHI_PROFILE_STORAGE_KEY)));
+      setProfile(readOshiProfile(localStorage));
     } catch (cause) {
       setError(
         cause instanceof Error
