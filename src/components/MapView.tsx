@@ -194,7 +194,7 @@ export default function MapView({ oshi }: { oshi: OshiSearchProfile }) {
           <span aria-hidden="true">{open ? "↓" : "↑"}</span>
         </button>
         {open && (
-          <div className="h-[calc(100%-56px)] space-y-2 overflow-auto px-4 pb-4">
+          <div className="h-[calc(100%-56px)] space-y-2 overflow-auto px-4 pb-24">
             {events.map((event) => (
               <button
                 key={event.id}

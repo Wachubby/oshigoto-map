@@ -9,6 +9,9 @@ import type { EventItem, NewsItem, SourceStatus } from "@/hooks/useWhitelistSear
 const unknownVenueCollector = new UnknownVenueCollector();
 const allowedViews = new Set(["all", "calendar", "map", "social"]);
 const mediaSources = whitelist.copyrighted_media;
+const officialEventSources = whitelist.official.filter(
+  (item) => item.type === "event-schedule" && item.domain === "helloproject.com",
+) as OfficialEventSource[];
 
 function plainText(value: string) {
   return value
@@ -131,48 +134,59 @@ export async function GET(request: NextRequest) {
   }
 
   if (includeEvents) {
-    const source = whitelist.official.find(
-      (item) =>
-        item.type === "event-schedule" &&
-        item.groupName === "Juice=Juice",
-    ) as OfficialEventSource | undefined;
-
-    if (!source) {
+    if (officialEventSources.length === 0) {
       sourceStatuses.push({
-        name: "Juice=Juice official schedule",
+        name: "Hello! Project official schedules",
         kind: "events",
         status: "error",
         message: "公式イベント情報源がホワイトリストにありません。",
       });
     } else {
-      try {
-        const result = await fetchHelloProjectEvents(source, {
-          name,
-          displayName,
-          helpers,
-        });
-        events = result.events;
-        eventMode = result.mode;
-        const classification = classifyVenueEvents(
-          events,
-          venuesWhitelist.venues,
-          unknownVenueCollector,
-        );
-        mapEvents = classification.approved;
+      const results = await Promise.all(
+        officialEventSources.map(async (source) => {
+          try {
+            const result = await fetchHelloProjectEvents(source, {
+              name,
+              displayName,
+              helpers,
+            });
+            return { source, result };
+          } catch (cause) {
+            return {
+              source,
+              error: cause instanceof Error ? cause.message : "公式日程を取得できませんでした。",
+            };
+          }
+        }),
+      );
+
+      for (const result of results) {
+        if ("error" in result) {
+          sourceStatuses.push({
+            name: result.source.name,
+            kind: "events",
+            status: "error",
+            message: result.error,
+          });
+          continue;
+        }
+
+        events.push(...result.result.events);
+        eventMode = result.result.mode === "A" || eventMode === "A" ? "A" : "B";
         sourceStatuses.push({
-          name: source.name,
+          name: result.source.name,
           kind: "events",
           status: "ok",
-          message: `Mode ${result.mode} · ${events.length}件の公式日程`,
-        });
-      } catch (cause) {
-        sourceStatuses.push({
-          name: source.name,
-          kind: "events",
-          status: "error",
-          message: cause instanceof Error ? cause.message : "公式日程を取得できませんでした。",
+          message: `Mode ${result.result.mode} · ${result.result.events.length}件の公式日程`,
         });
       }
+
+      const classification = classifyVenueEvents(
+        events,
+        venuesWhitelist.venues,
+        unknownVenueCollector,
+      );
+      mapEvents = classification.approved;
     }
   }
 

@@ -29,16 +29,6 @@ function normalizeOshiTerm(value: string) {
   return normalize(canonical ?? entity ?? value);
 }
 
-const JUICE_JUICE_NAMES = ["Juice=Juice", "ジュースジュース"].map(normalize);
-
-export function isJuiceJuiceGroupName(value: string) {
-  return JUICE_JUICE_NAMES.includes(normalizeOshiTerm(value));
-}
-
-export function isJuiceJuiceGroupMode(helpers: string[]) {
-  return helpers.some(isJuiceJuiceGroupName);
-}
-
 export type OfficialGroupEventCandidate = {
   title: string;
   searchText?: string;
@@ -55,11 +45,23 @@ export function filterOfficialGroupEvents<T extends OfficialGroupEventCandidate>
   events: T[],
   profile: OfficialEventProfile,
 ) {
-  const isGroupMode = isJuiceJuiceGroupMode(profile.helpers);
+  const matchingGroups = new Set(
+    events
+      .flatMap((event) => event.groupNames)
+      .filter((groupName) =>
+        profile.helpers.some(
+          (helper) => normalizeOshiTerm(helper) === normalizeOshiTerm(groupName),
+        ),
+      )
+      .map(normalizeOshiTerm),
+  );
+  const isGroupMode = matchingGroups.size > 0;
   if (isGroupMode) {
     return {
       isGroupMode,
-      events: events.filter((event) => event.groupNames.some(isJuiceJuiceGroupName)),
+      events: events.filter((event) =>
+        event.groupNames.some((groupName) => matchingGroups.has(normalizeOshiTerm(groupName))),
+      ),
     };
   }
 
@@ -116,7 +118,7 @@ export type SocialPostCandidate = {
 };
 
 export type SocialFilterProfile = {
-  name: string;
+  displayName: string;
   helpers: string[];
 };
 
@@ -136,34 +138,36 @@ export function filterSocialPosts<T extends SocialPostCandidate>(
   profile: SocialFilterProfile,
 ): SocialFilterResult<T> {
   const helpers = profile.helpers.map((helper) => helper.trim()).filter(Boolean);
-  const matchingGroup = helpers.find((helper) =>
-    posts.some(
-      (post) =>
-        post.authorType === "group" &&
-        post.author &&
-        normalizeOshiTerm(post.author) === normalizeOshiTerm(helper),
+  const helperTerms = new Set(helpers.map(normalizeOshiTerm));
+  const matchingGroupAuthors = [
+    ...new Set(
+      posts
+        .filter((post) => post.authorType === "group" && post.author?.trim())
+        .map((post) => post.author!.trim())
+        .filter((author) => helperTerms.has(normalizeOshiTerm(author))),
     ),
-  );
+  ];
 
-  if (matchingGroup) {
+  if (matchingGroupAuthors.length > 0) {
+    const matchingGroups = new Set(matchingGroupAuthors.map(normalizeOshiTerm));
     return {
       mode: "A",
-      groupName: matchingGroup,
+      groupName: matchingGroupAuthors[0],
       posts: posts.filter(
         (post) =>
           post.authorType === "group" &&
           post.author &&
-          normalizeOshiTerm(post.author) === normalizeOshiTerm(matchingGroup),
+          matchingGroups.has(normalizeOshiTerm(post.author)),
       ),
     };
   }
 
-  const terms = [profile.name, ...helpers].filter(Boolean);
+  const terms = [profile.displayName, ...helpers].filter(Boolean);
   return {
     mode: "B",
     posts: posts.filter((post) => {
       if (post.authorType === "personal") return true;
-      const searchableText = [post.caption, post.title, ...(post.tags ?? [])]
+      const searchableText = [post.caption, ...(post.tags ?? [])]
         .filter(Boolean)
         .join(" ");
       return textMatchesTerms(searchableText, terms);

@@ -12,7 +12,7 @@ export default function SnsView({ oshi }: { oshi: OshiSearchProfile }) {
   const news = data?.news ?? [];
   const socialPosts = news.filter((item) => item.kind === "social");
   const socialFilter = filterSocialPosts(socialPosts, {
-    name: oshi.formal,
+    displayName: oshi.displayName,
     helpers: oshi.nicknames,
   });
   const allowedSocialIds = new Set(socialFilter.posts.map((post) => post.id));
@@ -31,7 +31,7 @@ export default function SnsView({ oshi }: { oshi: OshiSearchProfile }) {
   const newsIsEmpty = !loading && !error && items.length === 0 && newsErrors.length === 0;
 
   return (
-    <div className="h-full space-y-3 overflow-y-auto p-3">
+    <div className="h-full space-y-3 overflow-y-auto p-3 pb-24">
       <div className="rounded bg-gray-50 p-2 text-[11px] text-gray-600">
         Mode A/B はホワイトリスト内の情報源から取得できた投稿に適用します。現在、グループ／個人アカウントの投稿元は未登録です。Instagram・YouTubeは登録済みの個別投稿／動画URLのみ確認し、プロフィール検索やスクレイピングは行いません。
       </div>

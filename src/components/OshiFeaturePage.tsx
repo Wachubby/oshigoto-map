@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import AppHeader from "@/components/AppHeader";
+import BottomNavigation from "@/components/BottomNavigation";
 import Calendar from "@/components/Calendar";
 import MapView from "@/components/MapView";
 import SnsView from "@/components/SnsView";
@@ -46,15 +47,15 @@ export default function OshiFeaturePage({
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-xl flex-col bg-white">
       <AppHeader
-        oshiName={profile.helper1.trim() || profile.name}
+        oshiName={oshi.displayName}
         activeSection={section}
-        showSectionTabs
       />
       <section className="min-h-[calc(100dvh-112px)] flex-1">
         {section === "calendar" && <Calendar />}
         {section === "map" && <MapView oshi={oshi} />}
         {section === "social" && <SnsView oshi={oshi} />}
       </section>
+      <BottomNavigation activeSection={section} />
     </main>
   );
 }

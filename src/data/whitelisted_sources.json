@@ -26,5 +26,5 @@
   ],
   "events": [],
   "excluded": ["一般ニュースサイト・まとめサイト・リークアカウントは取得しません - ホワイトリスト内プラットフォーム / 著作権メディアのタイトル+リンク / oEmbedのみ"],
-  "search_logic": "Calendar: events from the whitelisted official Juice=Juice schedule filtered by oshi name/helpers or group mode. Map: only approved venues from venues_whitelist.json."
+  "search_logic": "Calendar: events only from whitelisted official Hello! Project schedules, matched by oshi name/helpers or group tags. Map: only approved venues from venues_whitelist.json."
 }
