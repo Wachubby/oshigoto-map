@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import AppHeader from "@/components/AppHeader";
 import oshiTypes from "@/data/oshi_types.json";
 import {
   readOshiProfile,
@@ -66,7 +67,10 @@ export default function OnboardingPage() {
   }
 
   return (
-    <main className="min-h-dvh bg-[#fff7fb] px-4 py-8">
+    <main className="min-h-dvh bg-[#fff7fb] px-4 pb-8">
+      <div className="-mx-4">
+        <AppHeader oshiName={name.trim() || undefined} />
+      </div>
       <div className="mx-auto max-w-lg rounded-2xl border border-pink-100 bg-white p-5 shadow-sm sm:p-8">
         <h1 className="mt-4 text-2xl font-bold">推しを登録</h1>
         <p className="mt-2 text-sm text-gray-600">

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import AppHeader from "@/components/AppHeader";
 import Calendar from "@/components/Calendar";
 import MapView from "@/components/MapView";
 import SnsView from "@/components/SnsView";
@@ -10,12 +11,6 @@ import { useOshiProfile } from "@/hooks/useOshiProfile";
 import { toOshiSearchProfile } from "@/lib/oshi-profile";
 
 export type OshiSection = "calendar" | "map" | "social";
-
-const navigation: { id: OshiSection; label: string; href: string }[] = [
-  { id: "calendar", label: "カレンダー", href: "/calendar" },
-  { id: "map", label: "マップ", href: "/map" },
-  { id: "social", label: "SNS", href: "/social" },
-];
 
 export default function OshiFeaturePage({
   section,
@@ -50,30 +45,11 @@ export default function OshiFeaturePage({
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-xl flex-col bg-white">
-      <header className="border-b px-4 pb-3 pt-4">
-        <div className="flex items-center justify-between gap-3">
-          <Link href="/calendar" className="text-lg font-bold">推しごとマップ</Link>
-          <Link href="/onboarding" className="text-sm underline underline-offset-2">
-            {profile.name} を編集
-          </Link>
-        </div>
-        <nav aria-label="メインナビゲーション" className="mt-3 flex gap-2">
-          {navigation.map((item) => (
-            <Link
-              key={item.id}
-              href={item.href}
-              aria-current={section === item.id ? "page" : undefined}
-              className={`rounded-full px-4 py-2 text-sm ${
-                section === item.id
-                  ? "bg-[#FF2D78] font-semibold text-white"
-                  : "bg-gray-100 text-gray-700"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-      </header>
+      <AppHeader
+        oshiName={profile.name}
+        activeSection={section}
+        showSectionTabs
+      />
       <section className="min-h-[calc(100dvh-112px)] flex-1">
         {section === "calendar" && <Calendar />}
         {section === "map" && <MapView oshi={oshi} />}
