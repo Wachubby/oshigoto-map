@@ -21,19 +21,30 @@ export default function MapView({ oshi }: { oshi: OshiSearchProfile }) {
     id: "oshigoto-map-google",
     googleMapsApiKey: apiKey,
   });
-  const { data, loading, error, retry } = useWhitelistSearch(oshi);
+  const { data, loading, error, retry } = useWhitelistSearch(oshi, true, "map");
   const [selected, setSelected] = useState<string | null>(null);
   const [location, setLocation] = useState<VenueCoordinates | null>(null);
   const [geocoding, setGeocoding] = useState(false);
   const [geocodeError, setGeocodeError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const latestRequest = useRef(0);
-  const events = data?.events ?? [];
+  const events = data?.mapEvents ?? [];
+  const officialEvents = data?.events ?? [];
   const selectedEvent = events.find((event) => event.id === selected);
   const eventStatuses = data?.sourceStatuses.filter((source) => source.kind === "events") ?? [];
   const eventErrors = eventStatuses.filter((source) => source.status === "error");
   const eventFailed = eventErrors.length > 0 && !eventStatuses.some((source) => source.status === "ok");
-  const eventIsEmpty = !loading && !error && events.length === 0 && eventErrors.length === 0;
+  const eventIsEmpty =
+    !loading &&
+    !error &&
+    events.length === 0 &&
+    officialEvents.length === 0 &&
+    eventErrors.length === 0;
+  const noApprovedVenueEvents =
+    !loading &&
+    !error &&
+    events.length === 0 &&
+    officialEvents.length > 0;
 
   async function selectEvent(event: EventItem) {
     const requestId = ++latestRequest.current;
@@ -154,6 +165,11 @@ export default function MapView({ oshi }: { oshi: OshiSearchProfile }) {
       {eventIsEmpty && (
         <p role="status" className="absolute left-3 right-3 top-3 rounded-lg bg-white/95 p-3 text-xs text-gray-500 shadow">
           この名前に対応する公式イベント日程はありません。
+        </p>
+      )}
+      {noApprovedVenueEvents && (
+        <p role="status" className="absolute left-3 right-3 top-3 rounded-lg bg-white/95 p-3 text-xs text-gray-500 shadow">
+          公式日程はありますが、会場がマップの許可リストにないためピンは表示していません。
         </p>
       )}
       {eventErrors.length > 0 && !eventFailed && (

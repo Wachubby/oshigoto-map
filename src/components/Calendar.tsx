@@ -44,6 +44,7 @@ export default function Calendar() {
   const { data, loading, error, retry } = useWhitelistSearch(
     oshi ?? {},
     Boolean(oshi),
+    "calendar",
   );
   const [month, setMonth] = useState(() => {
     const now = new Date();
@@ -67,6 +68,7 @@ export default function Calendar() {
       const saved = readOshiProfile(localStorage);
       setOshi({
         formal: name,
+        displayName: saved?.helper1 || name,
         nicknames: saved
           ? [saved.helper1, saved.helper2, saved.helper3].filter(Boolean)
           : [],
@@ -193,7 +195,7 @@ export default function Calendar() {
         )}
         {eventIsEmpty && (
           <p role="status" className="mt-4 rounded border p-3 text-sm text-gray-500">
-            この名前に対応するホワイトリスト内の公式イベント日程はありません。
+            登録した名前や呼び名に一致する公式イベントはありません。
           </p>
         )}
         {!loading && !error && events.length > 0 && monthEvents.length === 0 && (

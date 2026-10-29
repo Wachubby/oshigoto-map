@@ -38,6 +38,7 @@ export type WhitelistSearchResponse = {
   status: "ok" | "empty" | "partial" | "error";
   news: NewsItem[];
   events: EventItem[];
+  mapEvents?: EventItem[];
   sourceStatuses: SourceStatus[];
   notice?: string;
   message?: string;
@@ -45,12 +46,20 @@ export type WhitelistSearchResponse = {
 
 export function useWhitelistSearch(oshi: {
   formal?: string;
+  displayName?: string;
   nicknames?: string[];
-}, enabled = true) {
+}, enabled = true, view: "all" | "calendar" | "map" | "social" = "all") {
   const query = useMemo(
     () => [oshi.formal, ...(oshi.nicknames ?? [])].filter(Boolean).join(","),
     [oshi.formal, oshi.nicknames],
   );
+  const requestQuery = useMemo(() => {
+    const params = new URLSearchParams({ q: query, view });
+    if (oshi.formal) params.set("name", oshi.formal);
+    if (oshi.displayName) params.set("displayName", oshi.displayName);
+    for (const helper of oshi.nicknames ?? []) params.append("helper", helper);
+    return params.toString();
+  }, [query, view, oshi.displayName, oshi.formal, oshi.nicknames]);
   const [data, setData] = useState<WhitelistSearchResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +77,7 @@ export function useWhitelistSearch(oshi: {
     setLoading(true);
     setError(null);
 
-    fetch(`/api/whitelist-search?q=${encodeURIComponent(query)}`, {
+    fetch(`/api/whitelist-search?${requestQuery}`, {
       signal: controller.signal,
       cache: "no-store",
     })
@@ -92,7 +101,7 @@ export function useWhitelistSearch(oshi: {
       });
 
     return () => controller.abort();
-  }, [enabled, query, refresh]);
+  }, [enabled, requestQuery, refresh]);
 
   const retry = useCallback(() => setRefresh((value) => value + 1), []);
 

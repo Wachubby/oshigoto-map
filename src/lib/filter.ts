@@ -23,6 +23,57 @@ function normalize(value: string) {
   return value.toLocaleLowerCase("ja-JP").normalize("NFKC").replace(/[\s\p{P}\p{S}]+/gu, "");
 }
 
+function normalizeOshiTerm(value: string) {
+  const canonical = value.match(/canonical_name\s*=\s*([^】]+)/i)?.[1];
+  const entity = value.match(/entity-([^¦】]+)/i)?.[1];
+  return normalize(canonical ?? entity ?? value);
+}
+
+const JUICE_JUICE_NAMES = ["Juice=Juice", "ジュースジュース"].map(normalize);
+
+export function isJuiceJuiceGroupName(value: string) {
+  return JUICE_JUICE_NAMES.includes(normalizeOshiTerm(value));
+}
+
+export function isJuiceJuiceGroupMode(helpers: string[]) {
+  return helpers.some(isJuiceJuiceGroupName);
+}
+
+export type OfficialGroupEventCandidate = {
+  title: string;
+  searchText?: string;
+  groupNames: string[];
+};
+
+export type OfficialEventProfile = {
+  name?: string;
+  displayName?: string;
+  helpers: string[];
+};
+
+export function filterOfficialGroupEvents<T extends OfficialGroupEventCandidate>(
+  events: T[],
+  profile: OfficialEventProfile,
+) {
+  const isGroupMode = isJuiceJuiceGroupMode(profile.helpers);
+  if (isGroupMode) {
+    return {
+      isGroupMode,
+      events: events.filter((event) => event.groupNames.some(isJuiceJuiceGroupName)),
+    };
+  }
+
+  const terms = [profile.displayName, profile.name, ...profile.helpers]
+    .map((term) => term?.trim() ?? "")
+    .filter(Boolean);
+  return {
+    isGroupMode,
+    events: events.filter((event) =>
+      textMatchesTerms(`${event.title} ${event.searchText ?? ""}`, terms),
+    ),
+  };
+}
+
 export function classifyVenueEvents<T extends VenueEventCandidate>(
   candidates: T[],
   venues: WhitelistedVenue[],
@@ -38,6 +89,11 @@ export function classifyVenueEvents<T extends VenueEventCandidate>(
   const reviewCandidates: T[] = [];
 
   for (const candidate of candidates) {
+    if (!candidate.venue.trim() || candidate.venue === "会場未記載") {
+      reviewCandidates.push(candidate);
+      continue;
+    }
+
     if (approvedNames.has(normalize(candidate.venue))) {
       approved.push(candidate);
       continue;
@@ -85,7 +141,7 @@ export function filterSocialPosts<T extends SocialPostCandidate>(
       (post) =>
         post.authorType === "group" &&
         post.author &&
-        normalize(post.author) === normalize(helper),
+        normalizeOshiTerm(post.author) === normalizeOshiTerm(helper),
     ),
   );
 
@@ -97,7 +153,7 @@ export function filterSocialPosts<T extends SocialPostCandidate>(
         (post) =>
           post.authorType === "group" &&
           post.author &&
-          normalize(post.author) === normalize(matchingGroup),
+          normalizeOshiTerm(post.author) === normalizeOshiTerm(matchingGroup),
       ),
     };
   }

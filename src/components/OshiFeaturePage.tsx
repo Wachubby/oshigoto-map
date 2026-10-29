@@ -46,7 +46,7 @@ export default function OshiFeaturePage({
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-xl flex-col bg-white">
       <AppHeader
-        oshiName={profile.name}
+        oshiName={profile.helper1.trim() || profile.name}
         activeSection={section}
         showSectionTabs
       />

@@ -69,7 +69,7 @@ export default function OnboardingPage() {
   return (
     <main className="min-h-dvh bg-[#fff7fb] px-4 pb-8">
       <div className="-mx-4">
-        <AppHeader oshiName={name.trim() || undefined} />
+        <AppHeader oshiName={helpers[0].trim() || name.trim() || undefined} />
       </div>
       <div className="mx-auto max-w-lg rounded-2xl border border-pink-100 bg-white p-5 shadow-sm sm:p-8">
         <h1 className="mt-4 text-2xl font-bold">推しを登録</h1>
@@ -121,7 +121,7 @@ export default function OnboardingPage() {
             {helpers.map((helper, index) => (
               <div key={index}>
                 <label htmlFor={`helper-${index + 1}`} className="mb-1 block text-sm text-gray-600">
-                  helper {index + 1}
+                  Nick {index + 1}
                 </label>
                 <input
                   id={`helper-${index + 1}`}

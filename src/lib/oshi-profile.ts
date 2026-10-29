@@ -20,6 +20,7 @@ export type OshiProfile = {
 
 export type OshiSearchProfile = {
   formal: string;
+  displayName: string;
   nicknames: string[];
 };
 
@@ -90,6 +91,7 @@ export function saveOshiProfile(storage: OshiProfileStorage, profile: OshiProfil
 export function toOshiSearchProfile(profile: OshiProfile): OshiSearchProfile {
   return {
     formal: profile.name,
+    displayName: profile.helper1 || profile.name,
     nicknames: [profile.helper1, profile.helper2, profile.helper3].filter(Boolean),
   };
 }

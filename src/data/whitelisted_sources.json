@@ -1,5 +1,14 @@
 {
-  "official": [],
+  "official": [
+    {
+      "name": "Hello! Project / Juice=Juice",
+      "domain": "helloproject.com",
+      "url": "https://helloproject.com/juicejuice/",
+      "eventPathPrefix": "/juicejuice/event/",
+      "groupName": "Juice=Juice",
+      "type": "event-schedule"
+    }
+  ],
   "related_official": [],
   "platforms": [
     { "name": "Instagram", "domain": "instagram.com", "type": "social", "note": "公開投稿URLのoEmbedのみ - 公開プロフィール検索は行いません" },
@@ -17,5 +26,5 @@
   ],
   "events": [],
   "excluded": ["一般ニュースサイト・まとめサイト・リークアカウントは取得しません - ホワイトリスト内プラットフォーム / 著作権メディアのタイトル+リンク / oEmbedのみ"],
-  "search_logic": "keyword (正式名 OR ニックネーム1-3) AND domain in platforms OR copyrighted_media - Japan tour only"
+  "search_logic": "Calendar: events from the whitelisted official Juice=Juice schedule filtered by oshi name/helpers or group mode. Map: only approved venues from venues_whitelist.json."
 }

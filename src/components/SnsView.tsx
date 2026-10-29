@@ -6,7 +6,7 @@ import type { OshiSearchProfile } from "@/lib/oshi-profile";
 import { filterSocialPosts } from "@/lib/filter";
 
 export default function SnsView({ oshi }: { oshi: OshiSearchProfile }) {
-  const { data, loading, error, retry } = useWhitelistSearch(oshi);
+  const { data, loading, error, retry } = useWhitelistSearch(oshi, true, "social");
   const [hidden, setHidden] = useState<string[]>([]);
   const [menu, setMenu] = useState<string | null>(null);
   const news = data?.news ?? [];
