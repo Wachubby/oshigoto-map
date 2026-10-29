@@ -1,9 +1,9 @@
 {
-  "version": "1.0.0",
-  "updated": "2026-10-18",
-  "description": "Oshigoto Map - Whitelist Venue - 5 regions: Tokyo/Kanto, Osaka/Kansai, Nagoya/Chubu, Sapporo/Hokkaido, Fukuoka/Kyushu",
+  "version": "2.0.0",
+  "updated": "2026-10-29",
+  "description": "Oshigoto Map - V1 venues plus 53 major venues across 8 regions.",
   "rules": {
-    "matching": "official account + venue allowlist + future date + event keywords (ライブ/物販/遠征/ワンマン/ツーマン/対バン/リリースイベント/特典会/チェキ会/サイン会)",
+    "matching": "Calendar: official-source whitelist and oshi profile. Map: only venues in this approved venue whitelist; do not invent or approve unlisted venues.",
     "not_allowed": "Disneyland, private cafe, casual posts without venue",
     "oshi_genres": "everything but 11 (maid/concafe) - see oshi_genre_master.json"
   },
@@ -14,9 +14,10 @@
         "Tokyo",
         "Kanagawa",
         "Saitama",
-        "Chiba"
+        "Chiba",
+        "Shizuoka"
       ],
-      "count": 40
+      "count": 60
     },
     "kansai": {
       "label": "大阪/関西",
@@ -25,29 +26,55 @@
         "Hyogo",
         "Kyoto"
       ],
-      "count": 12
+      "count": 22
     },
     "chubu": {
       "label": "名古屋/中部",
       "prefs": [
         "Aichi",
-        "Shizuoka"
+        "Shizuoka",
+        "Niigata",
+        "Mie"
       ],
-      "count": 7
+      "count": 15
     },
     "hokkaido": {
       "label": "札幌/北海道",
       "prefs": [
         "Hokkaido"
       ],
-      "count": 5
+      "count": 7
     },
     "kyushu": {
       "label": "福岡/九州",
       "prefs": [
-        "Fukuoka"
+        "Fukuoka",
+        "Kumamoto",
+        "Okinawa"
       ],
-      "count": 6
+      "count": 13
+    },
+    "tohoku": {
+      "label": "東北",
+      "prefs": [
+        "Miyagi"
+      ],
+      "count": 3
+    },
+    "chugoku": {
+      "label": "中国",
+      "prefs": [
+        "Hiroshima",
+        "Okayama"
+      ],
+      "count": 2
+    },
+    "shikoku": {
+      "label": "四国",
+      "prefs": [
+        "Kagawa"
+      ],
+      "count": 1
     }
   },
   "venues": [
@@ -61,6 +88,7 @@
       "prefecture": "Tokyo",
       "city": "Koto",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "koto",
         "tokyo",
@@ -79,6 +107,7 @@
       "prefecture": "Tokyo",
       "city": "Ota",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "ota",
         "tokyo",
@@ -95,6 +124,7 @@
       "prefecture": "Tokyo",
       "city": "Koto",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "toyosu pit",
         "tokyo",
@@ -110,6 +140,7 @@
       "prefecture": "Tokyo",
       "city": "Bunkyo",
       "type": "hall",
+      "tier": "mid",
       "search_keywords": [
         "tokyo",
         "tokyo dome city hall",
@@ -125,6 +156,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "tokyo",
         "shibuya",
@@ -142,6 +174,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "www x shibuya",
         "tokyo",
@@ -159,6 +192,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "tokyo",
         "shibuya",
@@ -176,6 +210,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "tokyo",
         "shibuya",
@@ -194,6 +229,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "o-west",
         "shibuya o-west",
@@ -212,6 +248,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "shibuya club quattro",
         "tokyo",
@@ -230,6 +267,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "tokyo",
         "shibuya",
@@ -247,6 +285,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "hall",
+      "tier": "mid",
       "search_keywords": [
         "shibuya stream hall",
         "stream hall",
@@ -265,6 +304,7 @@
       "prefecture": "Tokyo",
       "city": "Shinjuku",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "shinjuku",
         "tokyo",
@@ -283,6 +323,7 @@
       "prefecture": "Tokyo",
       "city": "Shinjuku",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "loft",
         "shinjuku",
@@ -301,6 +342,7 @@
       "prefecture": "Tokyo",
       "city": "Shinjuku",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "shinjuku",
         "shinjuku marz",
@@ -319,6 +361,7 @@
       "prefecture": "Tokyo",
       "city": "Shinjuku",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "shinjuku",
         "shinjuku reny",
@@ -337,6 +380,7 @@
       "prefecture": "Tokyo",
       "city": "Shinjuku",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "shinjuku face",
         "shinjuku",
@@ -353,6 +397,7 @@
       "prefecture": "Tokyo",
       "city": "Kita",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "kita",
         "akabane reny alpha",
@@ -368,6 +413,7 @@
       "prefecture": "Tokyo",
       "city": "Toshima",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "harevutai ikebukuro",
         "toshima",
@@ -383,6 +429,7 @@
       "prefecture": "Tokyo",
       "city": "Toshima",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "toshima",
         "ikebukuro blackhole",
@@ -398,6 +445,7 @@
       "prefecture": "Tokyo",
       "city": "Chiyoda",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "tokyo",
         "twinbox akihabara",
@@ -413,6 +461,7 @@
       "prefecture": "Tokyo",
       "city": "Chiyoda",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "tokyo",
         "twinbox garage akihabara",
@@ -428,6 +477,7 @@
       "prefecture": "Tokyo",
       "city": "Chiyoda",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "akihabara p.a.r.m.s",
         "tokyo",
@@ -443,6 +493,7 @@
       "prefecture": "Tokyo",
       "city": "Chiyoda",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "akihabara goodman",
         "tokyo",
@@ -458,6 +509,7 @@
       "prefecture": "Tokyo",
       "city": "Chiyoda",
       "type": "hall",
+      "tier": "mid",
       "search_keywords": [
         "kanda myojin hall",
         "tokyo",
@@ -473,6 +525,7 @@
       "prefecture": "Tokyo",
       "city": "Taito",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "taito",
         "asakusa vampkin",
@@ -488,6 +541,7 @@
       "prefecture": "Tokyo",
       "city": "Setagaya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "shimokitazawa shangri-la",
         "setagaya",
@@ -503,6 +557,7 @@
       "prefecture": "Tokyo",
       "city": "Setagaya",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "setagaya",
         "shimokitazawa mosaic",
@@ -520,6 +575,7 @@
       "prefecture": "Tokyo",
       "city": "Shibuya",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "shibuya kinmirai kaikan",
         "shibuya",
@@ -536,6 +592,7 @@
       "prefecture": "Tokyo",
       "city": "Shinjuku",
       "type": "hall",
+      "tier": "mid",
       "search_keywords": [
         "shinjuku",
         "tokyo",
@@ -554,6 +611,7 @@
       "prefecture": "Kanagawa",
       "city": "Yokohama",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "kt zepp yokohama",
         "yokohama",
@@ -570,6 +628,7 @@
       "prefecture": "Kanagawa",
       "city": "Yokohama",
       "type": "arena",
+      "tier": "mid",
       "search_keywords": [
         "yokohama",
         "yokohama arena",
@@ -585,6 +644,7 @@
       "prefecture": "Kanagawa",
       "city": "Yokohama",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "yokohama 1000 club",
         "yokohama",
@@ -600,6 +660,7 @@
       "prefecture": "Kanagawa",
       "city": "Yokohama",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "yokohama bay hall",
         "yokohama",
@@ -615,6 +676,7 @@
       "prefecture": "Kanagawa",
       "city": "Yokohama",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "f.a.d yokohama",
         "yokohama",
@@ -630,6 +692,7 @@
       "prefecture": "Saitama",
       "city": "Saitama",
       "type": "arena",
+      "tier": "mid",
       "search_keywords": [
         "saitama super arena",
         "saitama"
@@ -644,6 +707,7 @@
       "prefecture": "Saitama",
       "city": "Saitama",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "saitama",
         "heaven's rock saitama shintoshin"
@@ -658,6 +722,7 @@
       "prefecture": "Chiba",
       "city": "Chiba",
       "type": "event_hall",
+      "tier": "mid",
       "search_keywords": [
         "makuhari messe",
         "chiba"
@@ -672,6 +737,7 @@
       "prefecture": "Chiba",
       "city": "Kashiwa",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "chiba",
         "kashiwa palooza",
@@ -687,6 +753,7 @@
       "prefecture": "Chiba",
       "city": "Chiba",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "chiba look",
         "chiba"
@@ -703,6 +770,7 @@
       "prefecture": "Osaka",
       "city": "Osaka",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "osaka",
         "zepp osaka bayside"
@@ -719,6 +787,7 @@
       "prefecture": "Osaka",
       "city": "Osaka",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "zepp namba",
         "osaka"
@@ -733,6 +802,7 @@
       "prefecture": "Osaka",
       "city": "Osaka",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "namba hatch",
         "osaka"
@@ -747,6 +817,7 @@
       "prefecture": "Osaka",
       "city": "Osaka",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "osaka",
         "bigcat osaka"
@@ -763,6 +834,7 @@
       "prefecture": "Osaka",
       "city": "Osaka",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "umeda club quattro",
         "osaka",
@@ -778,6 +850,7 @@
       "prefecture": "Osaka",
       "city": "Osaka",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "osaka",
         "bananahall umeda"
@@ -792,6 +865,7 @@
       "prefecture": "Osaka",
       "city": "Osaka",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "yogibo meta valley / holy mountain",
         "osaka"
@@ -806,6 +880,7 @@
       "prefecture": "Osaka",
       "city": "Osaka",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "umeda trad",
         "osaka"
@@ -820,6 +895,7 @@
       "prefecture": "Hyogo",
       "city": "Amagasaki",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "hyogo",
         "amagasaki",
@@ -835,6 +911,7 @@
       "prefecture": "Hyogo",
       "city": "Kobe",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "kobe harbor studio",
         "kobe",
@@ -850,6 +927,7 @@
       "prefecture": "Kyoto",
       "city": "Kyoto",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "kyoto muse",
         "kyoto"
@@ -864,6 +942,7 @@
       "prefecture": "Kyoto",
       "city": "Kyoto",
       "type": "hall",
+      "tier": "mid",
       "search_keywords": [
         "kbs hall kyoto",
         "kyoto"
@@ -880,6 +959,7 @@
       "prefecture": "Aichi",
       "city": "Nagoya",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "aichi",
         "zepp nagoya",
@@ -895,6 +975,7 @@
       "prefecture": "Aichi",
       "city": "Nagoya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "diamond hall nagoya",
         "aichi",
@@ -910,6 +991,7 @@
       "prefecture": "Aichi",
       "city": "Nagoya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "bottom line nagoya",
         "aichi",
@@ -925,6 +1007,7 @@
       "prefecture": "Aichi",
       "city": "Nagoya",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "nagoya reny limited",
         "aichi",
@@ -940,6 +1023,7 @@
       "prefecture": "Aichi",
       "city": "Nagoya",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "ell / fits all nagoya",
         "aichi",
@@ -955,6 +1039,7 @@
       "prefecture": "Aichi",
       "city": "Nagoya",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "rad hall nagoya",
         "aichi",
@@ -970,6 +1055,7 @@
       "prefecture": "Shizuoka",
       "city": "Hamamatsu",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "livehouse hamamatsu madowaku",
         "shizuoka",
@@ -987,6 +1073,7 @@
       "prefecture": "Hokkaido",
       "city": "Sapporo",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "hokkaido",
         "sapporo",
@@ -1002,6 +1089,7 @@
       "prefecture": "Hokkaido",
       "city": "Sapporo",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "hokkaido",
         "sapporo",
@@ -1017,6 +1105,7 @@
       "prefecture": "Hokkaido",
       "city": "Sapporo",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "hokkaido",
         "sapporo",
@@ -1032,6 +1121,7 @@
       "prefecture": "Hokkaido",
       "city": "Sapporo",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "hokkaido",
         "sapporo",
@@ -1047,6 +1137,7 @@
       "prefecture": "Hokkaido",
       "city": "Sapporo",
       "type": "hall",
+      "tier": "mid",
       "search_keywords": [
         "hokkaido",
         "sapporo",
@@ -1064,6 +1155,7 @@
       "prefecture": "Fukuoka",
       "city": "Fukuoka",
       "type": "livehouse_large",
+      "tier": "livehouse",
       "search_keywords": [
         "zepp fukuoka",
         "fukuoka"
@@ -1078,6 +1170,7 @@
       "prefecture": "Fukuoka",
       "city": "Fukuoka",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "drum logos fukuoka",
         "fukuoka"
@@ -1092,6 +1185,7 @@
       "prefecture": "Fukuoka",
       "city": "Fukuoka",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "drum be-1 hakata",
         "fukuoka"
@@ -1106,6 +1200,7 @@
       "prefecture": "Fukuoka",
       "city": "Fukuoka",
       "type": "livehouse",
+      "tier": "livehouse",
       "search_keywords": [
         "fukuoka",
         "beat station fukuoka"
@@ -1120,6 +1215,7 @@
       "prefecture": "Fukuoka",
       "city": "Fukuoka",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "fukuoka",
         "pocket fukuoka / queblick"
@@ -1134,9 +1230,701 @@
       "prefecture": "Fukuoka",
       "city": "Fukuoka",
       "type": "livehouse_small",
+      "tier": "livehouse",
       "search_keywords": [
         "fukuoka",
         "op's fukuoka"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "budokan",
+      "name": "日本武道館",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "budokan",
+        "日本武道館"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "tokyo_dome",
+      "name": "東京ドーム",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Bunkyo",
+      "type": "dome",
+      "tier": "major",
+      "search_keywords": [
+        "tokyo dome"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "yoyogi_1st",
+      "name": "国立代々木競技場 第一体育館",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shibuya",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "yoyogi",
+        "代々木"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "tokyo_intl_forum",
+      "name": "東京国際フォーラム ホールA",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "国際フォーラム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "pia_arena_mm",
+      "name": "ぴあアリーナMM",
+      "region": "kanto",
+      "prefecture": "Kanagawa",
+      "city": "Yokohama",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "ぴあアリーナ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kanadevia_hall",
+      "name": "Kanadevia Hall",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinagawa",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "kanadevia"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "tokyo_garden_theater",
+      "name": "東京ガーデンシアター",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Koto",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "ガーデンシアター"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "hitomi_memorial",
+      "name": "昭和女子大学 人見記念講堂",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Setagaya",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "人見記念講堂"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "belluna_dome",
+      "name": "ベルーナドーム",
+      "region": "kanto",
+      "prefecture": "Saitama",
+      "city": "Tokorozawa",
+      "type": "dome",
+      "tier": "major",
+      "search_keywords": [
+        "ベルーナドーム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "tokyo_big_sight",
+      "name": "東京ビッグサイト",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Koto",
+      "type": "event_hall",
+      "tier": "major",
+      "search_keywords": [
+        "ビッグサイト"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "national_stadium",
+      "name": "国立競技場",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "stadium",
+      "tier": "major",
+      "search_keywords": [
+        "国立競技場"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "nissan_stadium",
+      "name": "日産スタジアム",
+      "region": "kanto",
+      "prefecture": "Kanagawa",
+      "city": "Yokohama",
+      "type": "stadium",
+      "tier": "major",
+      "search_keywords": [
+        "日産スタジアム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "zepp_shinjuku",
+      "name": "Zepp Shinjuku (TOKYO)",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "livehouse_large",
+      "tier": "major",
+      "search_keywords": [
+        "zepp shinjuku"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "imperial_theater",
+      "name": "帝国劇場",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "theater",
+      "tier": "major",
+      "search_keywords": [
+        "帝国劇場"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "takarazuka_tokyo",
+      "name": "東京宝塚劇場",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chiyoda",
+      "type": "theater",
+      "tier": "major",
+      "search_keywords": [
+        "宝塚"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "lumine_yoshimoto",
+      "name": "ルミネtheよしもと",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Shinjuku",
+      "type": "theater",
+      "tier": "major",
+      "search_keywords": [
+        "ルミネ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "fuji_speedway",
+      "name": "富士スピードウェイ",
+      "region": "kanto",
+      "prefecture": "Shizuoka",
+      "city": "Oyama",
+      "type": "circuit",
+      "tier": "major",
+      "search_keywords": [
+        "富士スピードウェイ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "sunshine_ike",
+      "name": "池袋サンシャインシティ",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Toshima",
+      "type": "event_hall",
+      "tier": "major",
+      "search_keywords": [
+        "サンシャイン"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "ajinomoto_stadium",
+      "name": "味の素スタジアム",
+      "region": "kanto",
+      "prefecture": "Tokyo",
+      "city": "Chofu",
+      "type": "stadium",
+      "tier": "major",
+      "search_keywords": [
+        "味の素スタジアム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "zozo_marine",
+      "name": "ZOZOマリンスタジアム",
+      "region": "kanto",
+      "prefecture": "Chiba",
+      "city": "Chiba",
+      "type": "stadium",
+      "tier": "major",
+      "search_keywords": [
+        "zozo marine"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kyocera_dome",
+      "name": "京セラドーム大阪",
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "dome",
+      "tier": "major",
+      "search_keywords": [
+        "京セラドーム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "osaka_castle_hall",
+      "name": "大阪城ホール",
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "大阪城ホール"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "orix_theater",
+      "name": "オリックス劇場",
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "オリックス劇場"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "festival_hall",
+      "name": "フェスティバルホール",
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "フェスティバルホール"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kobe_world_hall",
+      "name": "神戸ワールド記念ホール",
+      "region": "kansai",
+      "prefecture": "Hyogo",
+      "city": "Kobe",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "ワールド記念ホール"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "namba_grand",
+      "name": "なんばグランド花月",
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "theater",
+      "tier": "major",
+      "search_keywords": [
+        "グランド花月"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "umeda_arts",
+      "name": "梅田芸術劇場 メインホール",
+      "region": "kansai",
+      "prefecture": "Osaka",
+      "city": "Osaka",
+      "type": "theater",
+      "tier": "major",
+      "search_keywords": [
+        "梅田芸術劇場"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "rohm_kyoto",
+      "name": "ロームシアター京都",
+      "region": "kansai",
+      "prefecture": "Kyoto",
+      "city": "Kyoto",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "ロームシアター"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kobe_kokusai",
+      "name": "神戸国際会館こくさいホール",
+      "region": "kansai",
+      "prefecture": "Hyogo",
+      "city": "Kobe",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "神戸国際会館"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "koshien",
+      "name": "阪神甲子園球場",
+      "region": "kansai",
+      "prefecture": "Hyogo",
+      "city": "Nishinomiya",
+      "type": "stadium",
+      "tier": "major",
+      "search_keywords": [
+        "甲子園"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "vantelin_dome",
+      "name": "バンテリンドーム ナゴヤ",
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "dome",
+      "tier": "major",
+      "search_keywords": [
+        "バンテリンドーム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "gaishi_hall",
+      "name": "日本ガイシホール",
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "ガイシホール"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "nagoya_century",
+      "name": "名古屋国際会議場 センチュリーホール",
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "センチュリーホール"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "aichi_geijutsu",
+      "name": "愛知県芸術劇場 大ホール",
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "theater",
+      "tier": "major",
+      "search_keywords": [
+        "芸術劇場"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "port_messe",
+      "name": "ポートメッセなごや",
+      "region": "chubu",
+      "prefecture": "Aichi",
+      "city": "Nagoya",
+      "type": "event_hall",
+      "tier": "major",
+      "search_keywords": [
+        "ポートメッセ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "ecopa_arena",
+      "name": "エコパアリーナ",
+      "region": "chubu",
+      "prefecture": "Shizuoka",
+      "city": "Fukuroi",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "エコパアリーナ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "toki_messe",
+      "name": "朱鷺メッセ 新潟コンベンションセンター",
+      "region": "chubu",
+      "prefecture": "Niigata",
+      "city": "Niigata",
+      "type": "event_hall",
+      "tier": "major",
+      "search_keywords": [
+        "朱鷺メッセ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "suzuka_circuit",
+      "name": "鈴鹿サーキット",
+      "region": "chubu",
+      "prefecture": "Mie",
+      "city": "Suzuka",
+      "type": "circuit",
+      "tier": "major",
+      "search_keywords": [
+        "鈴鹿サーキット"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "premst_dome",
+      "name": "大和ハウス プレミストドーム",
+      "region": "hokkaido",
+      "prefecture": "Hokkaido",
+      "city": "Sapporo",
+      "type": "dome",
+      "tier": "major",
+      "search_keywords": [
+        "プレミストドーム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "sapporo_hitaru",
+      "name": "札幌文化芸術劇場 hitaru",
+      "region": "hokkaido",
+      "prefecture": "Hokkaido",
+      "city": "Sapporo",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "hitaru"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "paypay_dome",
+      "name": "みずほPayPayドーム福岡",
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "dome",
+      "tier": "major",
+      "search_keywords": [
+        "paypayドーム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "fukuoka_sunpalace",
+      "name": "福岡サンパレス",
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "サンパレス"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "fukuoka_kokusai",
+      "name": "福岡国際センター",
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "福岡国際センター"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "marine_messe",
+      "name": "マリンメッセ福岡",
+      "region": "kyushu",
+      "prefecture": "Fukuoka",
+      "city": "Fukuoka",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "マリンメッセ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "kumamoto_hall",
+      "name": "熊本城ホール",
+      "region": "kyushu",
+      "prefecture": "Kumamoto",
+      "city": "Kumamoto",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "熊本城ホール"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "okinawa_conv",
+      "name": "沖縄コンベンションセンター",
+      "region": "kyushu",
+      "prefecture": "Okinawa",
+      "city": "Ginowan",
+      "type": "event_hall",
+      "tier": "major",
+      "search_keywords": [
+        "沖縄コンベンション"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "naha_geijutsu",
+      "name": "那覇文化芸術劇場 なはーと",
+      "region": "kyushu",
+      "prefecture": "Okinawa",
+      "city": "Naha",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "なはーと"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "sendai_sunplaza",
+      "name": "仙台サンプラザホール",
+      "region": "tohoku",
+      "prefecture": "Miyagi",
+      "city": "Sendai",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "サンプラザ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "sendai_gigs",
+      "name": "仙台GIGS",
+      "region": "tohoku",
+      "prefecture": "Miyagi",
+      "city": "Sendai",
+      "type": "livehouse_large",
+      "tier": "major",
+      "search_keywords": [
+        "sendai gigs"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "sekisui_arena",
+      "name": "セキスイハイム スーパーアリーナ",
+      "region": "tohoku",
+      "prefecture": "Miyagi",
+      "city": "Rifu",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "セキスイハイム"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "hiroshima_green",
+      "name": "広島グリーンアリーナ",
+      "region": "chugoku",
+      "prefecture": "Hiroshima",
+      "city": "Hiroshima",
+      "type": "arena",
+      "tier": "major",
+      "search_keywords": [
+        "グリーンアリーナ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "okayama_hare",
+      "name": "岡山芸術創造劇場 ハレノワ",
+      "region": "chugoku",
+      "prefecture": "Okayama",
+      "city": "Okayama",
+      "type": "theater",
+      "tier": "major",
+      "search_keywords": [
+        "ハレノワ"
+      ],
+      "allowed": true
+    },
+    {
+      "id": "rexam_hall",
+      "name": "レクザムホール",
+      "region": "shikoku",
+      "prefecture": "Kagawa",
+      "city": "Takamatsu",
+      "type": "hall",
+      "tier": "major",
+      "search_keywords": [
+        "レクザムホール"
       ],
       "allowed": true
     }
